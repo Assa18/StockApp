@@ -1,0 +1,49 @@
+Number of products: 6
+{
+	ID:	1
+	Nev:	Ceruzahegy
+	Vonalkod:	7090045252109
+	Darabszam:	2
+	Vetel_ar:	45
+	Eladasi_ar:	53
+}
+{
+	ID:	2
+	Nev:	Magyar-kártya
+	Vonalkod:	5999885677009
+	Darabszam:	2
+	Vetel_ar:	7
+	Eladasi_ar:	10
+}
+{
+	ID:	3
+	Nev:	Könyv - The hunger games
+	Vonalkod:	9789635980840
+	Darabszam:	1
+	Vetel_ar:	40
+	Eladasi_ar:	50
+}
+{
+	ID:	4
+	Nev:	Víz-Perla
+	Vonalkod:	5942262002048
+	Darabszam:	19
+	Vetel_ar:	3
+	Eladasi_ar:	5.1
+}
+{
+	ID:	5
+	Nev:	Szemüveg pucoló
+	Vonalkod:	4056489845164
+	Darabszam:	0
+	Vetel_ar:	6.3
+	Eladasi_ar:	10.43
+}
+{
+	ID:	6
+	Nev:	Képkeret
+	Vonalkod:	
+	Darabszam:	4
+	Vetel_ar:	18.4
+	Eladasi_ar:	20.89
+}
