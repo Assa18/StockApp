@@ -163,7 +163,6 @@
     <ClCompile Include="directories\include\ImGui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="directories\include\ImGui\imgui_tables.cpp" />
     <ClCompile Include="directories\include\ImGui\imgui_widgets.cpp" />
-    <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\UIManager.cpp" />
     <ClCompile Include="src\StockChange.cpp" />
