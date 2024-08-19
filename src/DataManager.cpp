@@ -67,7 +67,7 @@ Product* DataManager::SearchProductByName(const std::string& name)
 	std::map<uint32_t, Product>::iterator it;
 	for (it = m_Storage.begin(); it != m_Storage.end(); it++)
 	{
-		if ((*it).second.GetName() == name)
+		if (DataManager::MatchNames(name, (*it).second.GetName()))
 		{
 			return &(*it).second;
 		}
@@ -95,6 +95,16 @@ void DataManager::AddStockChange(StockChange stockChange)
 
 void DataManager::DeleteStockChange(const Date& dateKey)
 {
+	int count = m_Changes[dateKey].GetCount();
+	if (m_Changes[dateKey].GetType() == StockChangeType::IN)
+	{
+		m_Changes[dateKey].GetProduct()->SetCount(std::max(m_Changes[dateKey].GetProduct()->GetCount() - count, 0));
+	}
+	else
+	{
+		m_Changes[dateKey].GetProduct()->SetCount(m_Changes[dateKey].GetProduct()->GetCount() + count);
+	}
+
 	m_Changes.erase(dateKey);
 }
 
@@ -270,4 +280,25 @@ DataManager::ProductStats DataManager::GetStatsCostum(Product* pr, const Date& s
 	}
 
 	return stats;
+}
+
+bool DataManager::MatchNames(const std::string& str1, const std::string& str2)
+{
+	if (str1 == str2) return true;
+	std::string copy1 = str1, copy2 = str2;
+
+	for (int i = 0; i < copy1.size(); i++)
+	{
+		copy1[i] = std::tolower(copy1[i]);
+	}
+
+	for (int i = 0; i < copy2.size(); i++)
+	{
+		copy2[i] = std::tolower(copy2[i]);
+	}
+
+	if (copy2.find(copy1) != std::string::npos)
+		return true;
+
+	return false;
 }

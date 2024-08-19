@@ -11,13 +11,13 @@ Number of products: 6
 	ID:	2
 	Nev:	Magyar-kártya
 	Vonalkod:	5999885677009
-	Darabszam:	2
+	Darabszam:	4
 	Vetel_ar:	7
 	Eladasi_ar:	10
 }
 {
 	ID:	3
-	Nev:	Könyv - The hunger games
+	Nev:	Könyv - The hunger games 230 dfgj dshgfDFHD
 	Vonalkod:	9789635980840
 	Darabszam:	1
 	Vetel_ar:	40
@@ -25,9 +25,9 @@ Number of products: 6
 }
 {
 	ID:	4
-	Nev:	Víz-Perla
+	Nev:	Viz-Perla
 	Vonalkod:	5942262002048
-	Darabszam:	19
+	Darabszam:	15
 	Vetel_ar:	3
 	Eladasi_ar:	5.1
 }

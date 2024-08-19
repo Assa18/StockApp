@@ -953,6 +953,7 @@ void UIManager::ChangeWindow(bool& show, bool editing, StockChangeType type)
 					{
 						error = false;
 						s_ChangeData.barcode = prWindow->GetBarcode();
+						s_ChangeData.name = prWindow->GetName();
 					}
 				}
 				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
@@ -1703,6 +1704,7 @@ void UIManager::SearchStockChangesByBarcode(std::vector<StockChange*>& changes, 
 	}
 }
 
+
 void UIManager::SearchStockChangesByName(std::vector<StockChange*>& changes, const std::string& name, 
 	StockChangeType type, int timeRange)
 {
@@ -1712,7 +1714,7 @@ void UIManager::SearchStockChangesByName(std::vector<StockChange*>& changes, con
 	for (it = m_DataM->GetUpdates().rbegin(); it != m_DataM->GetUpdates().rend(); it++)
 	{
 		if ((*it).second.GetDate() >=s_StartDate && (*it).second.GetDate()<=s_EndDate && 
-			((name=="") || (*it).second.GetProduct()->GetName() == name) &&
+			((name=="") || DataManager::MatchNames(name, (*it).second.GetProduct()->GetName())) &&
 			(type == StockChangeType::NONE || (*it).second.GetType() == type))
 			changes.push_back(&(*it).second);
 	}

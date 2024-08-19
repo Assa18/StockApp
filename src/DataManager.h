@@ -32,6 +32,8 @@ public:
 	std::map<uint32_t, Product>& GetProducts();
 	std::map<Date, StockChange>& GetUpdates();
 	const std::map<Date, StockChange>& GetUpdates() const;
+
+	static bool MatchNames(const std::string& str1, const std::string& str2);
 private:
 	float m_TVA;
 

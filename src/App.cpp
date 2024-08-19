@@ -9,27 +9,16 @@
 App::App()
 	:m_Window(nullptr), m_UIManager(nullptr), m_DataManager(nullptr)
 {
-	//ImGui and glfw setup
 	glfwInit();
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	m_Window = glfwCreateWindow(1280, 720, "StockScanner", nullptr, nullptr);
 	if (m_Window == nullptr)
 	{
 		std::cout << "Failed to create window!\n";
-		exit(0);
 	}
 
 	glfwMakeContextCurrent(m_Window);
 	glfwSwapInterval(1);
-
-	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-	{
-		std::cout << "Failed to initialize GLAD" << std::endl;
-		exit(0);
-	}
 
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
@@ -95,9 +84,6 @@ void App::Run()
 		ImGui::Render();
 		int display_w, display_h;
 		glfwGetFramebufferSize(m_Window, &display_w, &display_h);
-		glViewport(0, 0, display_w, display_h);
-		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 		glfwSwapBuffers(m_Window);
