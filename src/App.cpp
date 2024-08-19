@@ -55,12 +55,12 @@ App::App()
 
 	//StockApp setup
 	m_DataManager = new DataManager;
-	Serializer::DeserializeProducts(m_DataManager, "Products.json");
-	Serializer::DeserializeStockChanges(m_DataManager, "StockChanges.json");
+	Serializer::DeserializeProducts(m_DataManager, "Products.txt");
+	Serializer::DeserializeStockChanges(m_DataManager, "StockChanges.txt");
 
 	m_UIManager = new UIManager;
 	m_UIManager->SetDataManager(m_DataManager);
-	Serializer::DeserializeSettings(m_DataManager, m_UIManager, "Settings.json");
+	Serializer::DeserializeSettings(m_DataManager, m_UIManager, "Settings.txt");
 }
 
 App::~App()
@@ -72,9 +72,9 @@ App::~App()
 	glfwDestroyWindow(m_Window);
 	glfwTerminate();
 
-	Serializer::SerializeProducts(m_DataManager, "Products.json");
-	Serializer::SerializeStockChanges(m_DataManager, "StockChanges.json");
-	Serializer::SerializeSettings(m_DataManager, m_UIManager, "Settings.json");
+	Serializer::SerializeProducts(m_DataManager, "Products.txt");
+	Serializer::SerializeStockChanges(m_DataManager, "StockChanges.txt");
+	Serializer::SerializeSettings(m_DataManager, m_UIManager, "Settings.txt");
 
 	delete m_UIManager;
 	delete m_DataManager;
