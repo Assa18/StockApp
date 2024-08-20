@@ -6,7 +6,9 @@
 
 StockChange::StockChange()
 {
-
+	m_Count = 0;
+	m_Type = StockChangeType::ANY;
+	m_Product = nullptr;
 }
 
 StockChange::StockChange(const StockChange& change)
@@ -165,6 +167,7 @@ int Date::GetDayOfMonth(int month)
 		return 31;
 		break;
 	default:
+		return 30;
 		break;
 	}
 }

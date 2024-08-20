@@ -34,8 +34,14 @@ public:
 	const std::map<Date, StockChange>& GetUpdates() const;
 
 	static bool MatchNames(const std::string& str1, const std::string& str2);
+
+	std::vector<StockChange*>& GetChangesIN() { return s_ChangesIN; }
+	std::vector<StockChange*>& GetChangesOUT() { return s_ChangesOUT; }
+	std::vector<StockChange*>& GetChangesANY() { return s_ChangesANY; }
 private:
-	float m_TVA;
+	std::vector<StockChange*> s_ChangesIN;
+	std::vector<StockChange*> s_ChangesOUT;
+	std::vector<StockChange*> s_ChangesANY;
 
 	std::map<uint32_t, Product> m_Storage;
 	std::map<Date, StockChange> m_Changes;

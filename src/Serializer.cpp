@@ -188,7 +188,7 @@ void Serializer::SerializeSettings(const DataManager* dM, const UIManager* uM, c
 {
 	std::ofstream outSettings(path);
 
-	outSettings << "Betumeret:\n" << uM->m_Fontsize << '\n';
+	outSettings << "Betumeret:\n" << uM->m_FontSize << '\n';
 
 	outSettings.close();
 }
@@ -207,6 +207,6 @@ void Serializer::DeserializeSettings(DataManager* dM, UIManager* uM, const char*
 	std::getline(inSettings, line);
 	std::getline(inSettings, line);
 	float fontSize = std::stof(line);
-	uM->m_Fontsize = fontSize;
+	uM->m_FontSize = fontSize;
 	inSettings.close();
 }

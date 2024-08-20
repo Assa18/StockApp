@@ -5,7 +5,7 @@
 
 enum class StockChangeType
 {
-	NONE = 0, IN, OUT
+	ANY = 0, IN, OUT
 };
 
 enum class TimeRanges
@@ -141,7 +141,7 @@ class StockChange
 public:
 	StockChange();
 	StockChange(const StockChange& change);
-	StockChange(Product* pr, const Date& date, int count = 1, StockChangeType type = StockChangeType::NONE);
+	StockChange(Product* pr, const Date& date, int count = 1, StockChangeType type = StockChangeType::ANY);
 	~StockChange();
 
 	Product* GetProduct() const;

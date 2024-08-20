@@ -1,14 +1,11 @@
 #include "DataManager.h"
 
 DataManager::DataManager()
-	:m_TVA(19.0f)
 {
-
 }
 
 DataManager::~DataManager()
 {
-
 }
 
 void DataManager::AddProduct(Product product)
@@ -35,7 +32,7 @@ void DataManager::DeleteProduct(uint32_t id)
 
 int DataManager::GetNumOfProducts() const
 {
-	return m_Storage.size();
+	return (int)m_Storage.size();
 }
 
 const std::map<uint32_t, Product>& DataManager::GetProducts() const
@@ -110,7 +107,7 @@ void DataManager::DeleteStockChange(const Date& dateKey)
 
 int DataManager::GetNumOfStockChanges() const
 {
-	return m_Changes.size();
+	return (int)m_Changes.size();
 }
 
 std::map<Date, StockChange>& DataManager::GetUpdates()

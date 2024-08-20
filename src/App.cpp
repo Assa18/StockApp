@@ -49,6 +49,7 @@ App::App()
 
 	m_UIManager = new UIManager;
 	m_UIManager->SetDataManager(m_DataManager);
+	m_UIManager->SetupStyle();
 	Serializer::DeserializeSettings(m_DataManager, m_UIManager, "Settings.txt");
 }
 
