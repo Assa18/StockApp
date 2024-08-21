@@ -121,6 +121,66 @@ const std::map<Date, StockChange>& DataManager::GetUpdates() const
 	return m_Changes;
 }
 
+void DataManager::FillChangesIN()
+{
+	m_ChangesIN.clear();
+	std::map<Date, StockChange>::iterator it;
+	for (it = m_Changes.begin(); it != m_Changes.end(); it++)
+	{
+		if ((*it).second.GetType() == StockChangeType::IN)
+		{
+			m_ChangesIN.push_back(&(*it).second);
+		}
+	}
+}
+
+void DataManager::FillChangesOUT()
+{
+	m_ChangesOUT.clear();
+	std::map<Date, StockChange>::iterator it;
+	for (it = m_Changes.begin(); it != m_Changes.end(); it++)
+	{
+		if ((*it).second.GetType() == StockChangeType::OUT)
+		{
+			m_ChangesOUT.push_back(&(*it).second);
+		}
+	}
+}
+
+void DataManager::FillChangesANY()
+{
+	m_ChangesANY.clear();
+	std::map<Date, StockChange>::iterator it;
+	for (it = m_Changes.begin(); it != m_Changes.end(); it++)
+	{
+		m_ChangesANY.push_back(&(*it).second);
+	}
+}
+
+void DataManager::SearchByName(std::vector<StockChange*>& source, StockChangeType type, const std::string& name)
+{
+	source.clear();
+	std::map<Date, StockChange>::iterator it;
+	for (it = m_Changes.begin(); it != m_Changes.end(); it++)
+	{
+		if ( ((name == "") || DataManager::MatchNames(name, (*it).second.GetProduct()->GetName())) &&
+			(type == StockChangeType::ANY || (*it).second.GetType() == type))
+			source.push_back(&(*it).second);
+	}
+}
+
+void DataManager::SearchByBarcode(std::vector<StockChange*>& source, StockChangeType type, const std::string& barcode)
+{
+	source.clear();
+	std::map<Date, StockChange>::iterator it;
+	for (it = m_Changes.begin(); it != m_Changes.end(); it++)
+	{
+		if (((barcode == "") || (*it).second.GetProduct()->GetBarcode() == barcode) &&
+			(type == StockChangeType::ANY || (*it).second.GetType() == type))
+			source.push_back(&(*it).second);
+	}
+}
+
 void DataManager::CalculateStats()
 {
 	ClearStats();

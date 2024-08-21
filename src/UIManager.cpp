@@ -58,6 +58,9 @@ UIManager::~UIManager()
 void UIManager::SetDataManager(DataManager* dataM)
 {
 	m_DataM = dataM;
+	m_DataM->FillChangesANY();
+	m_DataM->FillChangesIN();
+	m_DataM->FillChangesOUT();
 }
 
 void UIManager::Update()
@@ -101,6 +104,8 @@ void UIManager::Update()
 			}
 			ImGui::SameLine();
 			WhatToShow(4, m_TextsChange, m_ShowTextsChange);
+			ImGui::SameLine();
+			ShowSearch(m_DataM->GetChangesOUT(), StockChangeType::OUT, m_SearchStringOUT);
 
 			ShowTable(m_DataM->GetChangesOUT(), 4, m_TextsChange, m_ShowTextsChange, StockChangeType::OUT);
 
@@ -119,6 +124,10 @@ void UIManager::Update()
 			}
 			ImGui::SameLine();
 			WhatToShow(4, m_TextsChange, m_ShowTextsChange);
+			ImGui::SameLine();
+			ShowSearch(m_DataM->GetChangesIN(), StockChangeType::IN, m_SearchStringIN);
+
+			ShowTable(m_DataM->GetChangesIN(), 4, m_TextsChange, m_ShowTextsChange, StockChangeType::IN);
 
 			ImGui::EndTabItem();
 		}
@@ -178,7 +187,21 @@ void UIManager::Update()
 
 void UIManager::AddChangeWindow()
 {
+	ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.0f, 0.0f, 0.0f, 1.0f));
+	
+	ImGui::OpenPopup("Add change window");
+	if (ImGui::BeginPopupModal("Add change window"))
+	{
+		if (ImGui::Button("Ok"))
+		{
+			m_State = UIStates::NoState;
+			ImGui::CloseCurrentPopup();
+		}
 
+		ImGui::EndPopup();
+	}
+
+	ImGui::PopStyleColor();
 }
 
 void UIManager::EditChangeWindow()
@@ -271,86 +294,133 @@ void UIManager::ShowTable(const std::vector<StockChange*>& source, int num, cons
 		std::vector<StockChange*>::const_reverse_iterator it;
 		for (it = source.rbegin(); it != source.rend(); it++)
 		{
-			if ((*it)->GetType() == StockChangeType::ANY || (*it)->GetType() == type)
+			ImGui::TableNextRow();
+			if (showTexts[0])
 			{
-				ImGui::TableNextRow();
-				if (showTexts[0])
-				{
-					ImGui::TableNextColumn();
-					ImGui::Text("%s", (*it)->GetProduct()->GetBarcode().c_str());
-				}
-
-				if (showTexts[1])
-				{
-					ImGui::TableNextColumn();
-					ImGui::Text("%s", (*it)->GetProduct()->GetName().c_str());
-				}
-
-				if (num == 5)
-				{
-					if (showTexts[2])
-					{
-						ImGui::TableNextColumn();
-						ImGui::Text("%s", m_TypeNames[(int)(*it)->GetType()]);
-					}
-
-					if (showTexts[3])
-					{
-						ImGui::TableNextColumn();
-						ImGui::Text("%d", (*it)->GetCount());
-					}
-
-					if (showTexts[4])
-					{
-						ImGui::TableNextColumn();
-						ImGui::Text("%s", (*it)->GetDate().ToString().c_str());
-					}
-
-				}
-				else
-				{
-					if (showTexts[2])
-					{
-						ImGui::TableNextColumn();
-						ImGui::Text("%d", (*it)->GetCount());
-					}
-
-					if (showTexts[3])
-					{
-						ImGui::TableNextColumn();
-						ImGui::Text("%s", (*it)->GetDate().ToString().c_str());
-					}
-				}
-
-				ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.6313f, 0.8078f, 0.7647f, 1.0f));
-				ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.9803f, 0.9568f, 0.8274f, 1.0f));
 				ImGui::TableNextColumn();
-				std::string name = "Szerkeszt##" + std::to_string(j);
-				if (ImGui::SmallButton(name.c_str()))
-				{
-					m_State = UIStates::EditChange;
-					//s_Type = StockChangeType::IN;
-					//s_ChangeData.Set(*(*it));
-				}
-				ImGui::SameLine();
-				name = "Töröl##" + std::to_string(j);
-				if (ImGui::SmallButton(name.c_str()))
-				{
-					m_DataM->DeleteStockChange((*it)->GetDate());
-					ImGui::PopStyleColor();
-					ImGui::PopStyleColor();
-					break;
-				}
-				ImGui::PopStyleColor();
-				ImGui::PopStyleColor();
-				j++;
+				ImGui::Text("%s", (*it)->GetProduct()->GetBarcode().c_str());
 			}
+
+			if (showTexts[1])
+			{
+				ImGui::TableNextColumn();
+				ImGui::Text("%s", (*it)->GetProduct()->GetName().c_str());
+			}
+
+			if (num == 5)
+			{
+				if (showTexts[2])
+				{
+					ImGui::TableNextColumn();
+					ImGui::Text("%s", m_TypeNames[(int)(*it)->GetType()]);
+				}
+
+				if (showTexts[3])
+				{
+					ImGui::TableNextColumn();
+					ImGui::Text("%d", (*it)->GetCount());
+				}
+
+				if (showTexts[4])
+				{
+					ImGui::TableNextColumn();
+					ImGui::Text("%s", (*it)->GetDate().ToString().c_str());
+				}
+
+			}
+			else
+			{
+				if (showTexts[2])
+				{
+					ImGui::TableNextColumn();
+					ImGui::Text("%d", (*it)->GetCount());
+				}
+
+				if (showTexts[3])
+				{
+					ImGui::TableNextColumn();
+					ImGui::Text("%s", (*it)->GetDate().ToString().c_str());
+				}
+			}
+
+			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.6313f, 0.8078f, 0.7647f, 1.0f));
+			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.9803f, 0.9568f, 0.8274f, 1.0f));
+			ImGui::TableNextColumn();
+			std::string name = "Szerkeszt##" + std::to_string(j);
+			if (ImGui::SmallButton(name.c_str()))
+			{
+				m_State = UIStates::EditChange;
+				//s_Type = StockChangeType::IN;
+				//s_ChangeData.Set(*(*it));
+			}
+			ImGui::SameLine();
+			name = "Töröl##" + std::to_string(j);
+			if (ImGui::SmallButton(name.c_str()))
+			{
+				m_DataM->DeleteStockChange((*it)->GetDate());
+				ImGui::PopStyleColor();
+				ImGui::PopStyleColor();
+				break;
+			}
+			ImGui::PopStyleColor();
+			ImGui::PopStyleColor();
+			j++;
 		}
 
 		ImGui::EndTable();
 	}
 
 	ImGui::PopStyleColor();
+}
+
+void UIManager::ShowSearch(std::vector<StockChange*> &source, StockChangeType type, std::string& searchString)
+{
+	ImGui::BeginGroup();
+
+	static int form = 0;
+	if (ImGui::Button("Keresés"))
+	{
+		switch (form)
+		{
+		case 0:
+			m_DataM->SearchByBarcode(source, type, searchString);
+			break;
+		case 1:
+			m_DataM->SearchByName(source, type, searchString);
+			break;
+		default:
+			break;
+		}
+	}
+	ImGui::SameLine();
+	ImGui::InputText("##", &searchString);
+
+	ImGui::SameLine();
+	if (ImGui::Button("Keresés vége"))
+	{
+		switch (type)
+		{
+		case StockChangeType::ANY:
+			m_DataM->FillChangesANY();
+			break;
+		case StockChangeType::IN:
+			m_DataM->FillChangesIN();
+			break;
+		case StockChangeType::OUT:
+			m_DataM->FillChangesOUT();
+			break;
+		default:
+			break;
+		}
+		searchString.clear();
+	}
+	ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
+	ImGui::Text("Keresési forma:"); ImGui::SameLine();
+	ImGui::RadioButton("Vonalkód szerint", &form, 0); ImGui::SameLine();
+	ImGui::RadioButton("Név szerint", &form, 1);
+	ImGui::PopStyleColor();
+
+	ImGui::EndGroup();
 }
 
 void UIManager::SetupStyle()

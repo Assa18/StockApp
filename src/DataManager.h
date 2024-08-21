@@ -35,13 +35,20 @@ public:
 
 	static bool MatchNames(const std::string& str1, const std::string& str2);
 
-	std::vector<StockChange*>& GetChangesIN() { return s_ChangesIN; }
-	std::vector<StockChange*>& GetChangesOUT() { return s_ChangesOUT; }
-	std::vector<StockChange*>& GetChangesANY() { return s_ChangesANY; }
+	std::vector<StockChange*>& GetChangesIN() { return m_ChangesIN; }
+	std::vector<StockChange*>& GetChangesOUT() { return m_ChangesOUT; }
+	std::vector<StockChange*>& GetChangesANY() { return m_ChangesANY; }
+
+	void FillChangesIN();
+	void FillChangesOUT();
+	void FillChangesANY();
+
+	void SearchByName(std::vector<StockChange*>& source, StockChangeType type, const std::string& name);
+	void SearchByBarcode(std::vector<StockChange*>& source, StockChangeType type, const std::string& barcode);
 private:
-	std::vector<StockChange*> s_ChangesIN;
-	std::vector<StockChange*> s_ChangesOUT;
-	std::vector<StockChange*> s_ChangesANY;
+	std::vector<StockChange*> m_ChangesIN;
+	std::vector<StockChange*> m_ChangesOUT;
+	std::vector<StockChange*> m_ChangesANY;
 
 	std::map<uint32_t, Product> m_Storage;
 	std::map<Date, StockChange> m_Changes;

@@ -39,6 +39,7 @@ private:
 
 	void WhatToShow(int num, const char* texts[], bool booleans[]);
 	void ShowTable(const std::vector<StockChange*>& source, int num, const char* texts[], bool showTexts[], StockChangeType type);
+	void ShowSearch(std::vector<StockChange*> &source, StockChangeType type, std::string& searchString);
 private:
 	friend class Serializer;
 	DataManager* m_DataM;
@@ -52,4 +53,8 @@ private:
 	bool m_ShowTextsAllChange[5] = { true,true,true,true,true };
 
 	const char* m_TypeNames[3] = { u8"Minden", u8"Kimenö", u8"Bejövö" };
+
+	std::string m_SearchStringIN;
+	std::string m_SearchStringOUT;
+	std::string m_SearchStringANY;
 };
