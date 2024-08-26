@@ -2,7 +2,7 @@ Number of products: 6
 {
 	ID:	1
 	Nev:	Ceruzahegy
-	Vonalkod:	7090045252109
+	Vonalkod:	7
 	Darabszam:	2
 	Vetel_ar:	45
 	Eladasi_ar:	53
@@ -26,8 +26,8 @@ Number of products: 6
 {
 	ID:	4
 	Nev:	Viz-Perla
-	Vonalkod:	5942262002048
-	Darabszam:	15
+	Vonalkod:	5
+	Darabszam:	13
 	Vetel_ar:	3
 	Eladasi_ar:	5.1
 }

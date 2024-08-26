@@ -21,6 +21,9 @@ public:
 	Product* SearchProductByName(const std::string& name);
 	Product* SearchProductByID(uint32_t id);
 
+	void SearchProductBarcode(std::vector<Product*>& source, const std::string& code);
+	void SearchProductName(std::vector<Product*>& source, const std::string& name);
+
 	int GetNumOfProducts() const;
 
 	void AddStockChange(StockChange stockChange);
@@ -38,10 +41,12 @@ public:
 	std::vector<StockChange*>& GetChangesIN() { return m_ChangesIN; }
 	std::vector<StockChange*>& GetChangesOUT() { return m_ChangesOUT; }
 	std::vector<StockChange*>& GetChangesANY() { return m_ChangesANY; }
+	std::vector<Product*>& GetProductPtrs() { return m_ProductPtrs; }
 
 	void FillChangesIN();
 	void FillChangesOUT();
 	void FillChangesANY();
+	void FillProductPtrs(bool onStock);
 
 	void SearchByName(std::vector<StockChange*>& source, StockChangeType type, const std::string& name);
 	void SearchByBarcode(std::vector<StockChange*>& source, StockChangeType type, const std::string& barcode);
@@ -49,6 +54,8 @@ private:
 	std::vector<StockChange*> m_ChangesIN;
 	std::vector<StockChange*> m_ChangesOUT;
 	std::vector<StockChange*> m_ChangesANY;
+
+	std::vector<Product*> m_ProductPtrs;
 
 	std::map<uint32_t, Product> m_Storage;
 	std::map<Date, StockChange> m_Changes;

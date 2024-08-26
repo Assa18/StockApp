@@ -11,15 +11,15 @@ public:
 
 	uint32_t GetID() const;
 	void SetID(uint32_t id);
-	std::string GetBarcode() const;
+	std::string& GetBarcode();
 	void SetBarcode(const std::string& barcode);
-	std::string GetName() const;
+	std::string& GetName();
 	void SetName(const std::string& name);
-	int GetCount() const;
+	int& GetCount();
 	void SetCount(int count);
-	float GetBuyPrice() const;
+	float& GetBuyPrice();
 	void SetBuyPrice(float price);
-	float GetSellPrice() const;
+	float& GetSellPrice();
 	void SetSellPrice(float price);
 
 	void Set(const std::string& name, const std::string& barcode, int count, float buyPrice, float sellPrice);

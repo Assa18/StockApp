@@ -18,6 +18,17 @@ enum class UIStates {
 	NoState = 0, Settings, Overall, AddChange, EditChange, AddProduct, EditProduct
 };
 
+struct ChangeData
+{
+	std::string Name, Barcode;
+	int Count;
+	Date Time;
+	StockChangeType Type;
+
+	void Set(StockChange* change);
+	void Reset(StockChangeType type = StockChangeType::ANY);
+};
+
 class UIManager
 {
 public:
@@ -39,7 +50,9 @@ private:
 
 	void WhatToShow(int num, const char* texts[], bool booleans[]);
 	void ShowTable(const std::vector<StockChange*>& source, int num, const char* texts[], bool showTexts[], StockChangeType type);
+	void ShowTable(const std::vector<Product*>& source, int num, const char* texts[], bool showTexts[]);
 	void ShowSearch(std::vector<StockChange*> &source, StockChangeType type, std::string& searchString);
+	void ShowSearch(std::vector<Product*>& source, std::string& searchString);
 private:
 	friend class Serializer;
 	DataManager* m_DataM;
@@ -52,9 +65,18 @@ private:
 	const char* m_TextsAllChange[5] = { u8"Vonalkód", u8"Név", u8"Típus", u8"Darabszám", u8"Dátum"};
 	bool m_ShowTextsAllChange[5] = { true,true,true,true,true };
 
-	const char* m_TypeNames[3] = { u8"Minden", u8"Kimenö", u8"Bejövö" };
+	const char* m_TextsProduct[5] = { u8"Vonalkód", u8"Név", u8"Darabszám", u8"Vétel ár", u8"Eladási ár" };
+	bool m_ShowTextsProduct[5] = { true,true,true,true,true };
+
+	const char* m_TypeNames[3] = { u8"Minden", u8"Bejövö", u8"Kimenö" };
 
 	std::string m_SearchStringIN;
 	std::string m_SearchStringOUT;
 	std::string m_SearchStringANY;
+	std::string m_SearchStringPr;
+
+	ChangeData m_ChangeData;
+
+	Product* m_Productptr;
+	bool m_OnStock = false;
 };

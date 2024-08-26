@@ -85,6 +85,20 @@ Product* DataManager::SearchProductByID(uint32_t id)
 	return nullptr;
 }
 
+void DataManager::SearchProductBarcode(std::vector<Product*>& source, const std::string& code)
+{
+	source.clear();
+	Product* pr = SearchProductByBarcode(code);
+	if (pr) source.push_back(pr);
+}
+
+void DataManager::SearchProductName(std::vector<Product*>& source, const std::string& name)
+{
+	source.clear();
+	Product* pr = SearchProductByName(name);
+	if (pr) source.push_back(pr);
+}
+
 void DataManager::AddStockChange(StockChange stockChange)
 {
 	m_Changes[stockChange.GetDate()] = stockChange;
@@ -154,6 +168,17 @@ void DataManager::FillChangesANY()
 	for (it = m_Changes.begin(); it != m_Changes.end(); it++)
 	{
 		m_ChangesANY.push_back(&(*it).second);
+	}
+}
+
+void DataManager::FillProductPtrs(bool onStock)
+{
+	m_ProductPtrs.clear();
+	std::map<uint32_t, Product>::iterator it;
+	for (it = m_Storage.begin(); it != m_Storage.end(); it++)
+	{
+		if (onStock && (*it).second.GetCount() > 0) m_ProductPtrs.push_back(&(*it).second);
+		else if (!onStock) m_ProductPtrs.push_back(&(*it).second);
 	}
 }
 

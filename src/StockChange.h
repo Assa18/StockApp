@@ -155,6 +155,10 @@ public:
 	void SetCount(int count);
 
 	void Set(Product* prPtr, int count, StockChangeType type);
+	void Set(const StockChange& change);
+	void Reset(StockChangeType type = StockChangeType::ANY);
+
+	friend class UIManager;
 private:
 	Product* m_Product;
 	Date m_Date;
