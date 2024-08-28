@@ -49,7 +49,13 @@ public:
 	void FillProductPtrs(bool onStock);
 
 	void SearchByName(std::vector<StockChange*>& source, StockChangeType type, const std::string& name);
-	void SearchByBarcode(std::vector<StockChange*>& source, StockChangeType type, const std::string& barcode);
+	void SearchByBarcode(std::vector<StockChange*>& source,	StockChangeType type, const std::string& barcode);
+	
+	void SearchByName(std::vector<StockChange*>& source, const Date& startDate, const Date& endDate, 
+		StockChangeType type, const std::string& name);
+	void SearchByBarcode(std::vector<StockChange*>& source, const Date& startDate, const Date& endDate, 
+		StockChangeType type, const std::string& barcode);
+	void SearchByDate(std::vector<StockChange*>& source, StockChangeType type, const std::string& date);
 private:
 	std::vector<StockChange*> m_ChangesIN;
 	std::vector<StockChange*> m_ChangesOUT;

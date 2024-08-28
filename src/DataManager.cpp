@@ -206,6 +206,47 @@ void DataManager::SearchByBarcode(std::vector<StockChange*>& source, StockChange
 	}
 }
 
+void DataManager::SearchByName(std::vector<StockChange*>& source, const Date& startDate, const Date& endDate,
+	StockChangeType type, const std::string& name)
+{
+	source.clear();
+	std::map<Date, StockChange>::reverse_iterator it;
+	for (it = m_Changes.rbegin(); it != m_Changes.rend(); it++)
+	{
+		if ((*it).second.GetDate() >= startDate && (*it).second.GetDate() <= endDate &&
+			((name == "") || DataManager::MatchNames(name, (*it).second.GetProduct()->GetName())) &&
+			(type == StockChangeType::ANY || (*it).second.GetType() == type))
+			source.push_back(&(*it).second);
+	}
+}
+
+void DataManager::SearchByBarcode(std::vector<StockChange*>& source, const Date& startDate, const Date& endDate,
+	StockChangeType type, const std::string& barcode)
+{
+
+	source.clear();
+	std::map<Date, StockChange>::reverse_iterator it;
+	for (it = m_Changes.rbegin(); it != m_Changes.rend(); it++)
+	{
+		if ((*it).second.GetDate() >= startDate && (*it).second.GetDate() <= endDate &&
+			((barcode == "") || (*it).second.GetProduct()->GetBarcode() == barcode) &&
+			(type == StockChangeType::ANY || (*it).second.GetType() == type))
+			source.push_back(&(*it).second);
+	}
+}
+
+void DataManager::SearchByDate(std::vector<StockChange*>& source, StockChangeType type, const std::string& date)
+{
+	source.clear();
+	std::map<Date, StockChange>::iterator it;
+	for (it = m_Changes.begin(); it != m_Changes.end(); it++)
+	{
+		if (((date == "") || (*it).second.GetDate().Equals(Date::GetDateFromString(date))) &&
+			(type == StockChangeType::ANY || (*it).second.GetType() == type))
+			source.push_back(&(*it).second);
+	}
+}
+
 void DataManager::CalculateStats()
 {
 	ClearStats();

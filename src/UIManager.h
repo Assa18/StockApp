@@ -1,6 +1,8 @@
 #pragma once
 
 #include "DataManager.h"
+#include "Utilities.h"
+
 #include <ImGui/imgui.h>
 
 #include <vector>
@@ -16,17 +18,6 @@ enum class Colors {
 
 enum class UIStates {
 	NoState = 0, Settings, Overall, AddChange, EditChange, AddProduct, EditProduct
-};
-
-struct ChangeData
-{
-	std::string Name, Barcode;
-	int Count;
-	Date Time;
-	StockChangeType Type;
-
-	void Set(StockChange* change);
-	void Reset(StockChangeType type = StockChangeType::ANY);
 };
 
 class UIManager
@@ -52,7 +43,10 @@ private:
 	void ShowTable(const std::vector<StockChange*>& source, int num, const char* texts[], bool showTexts[], StockChangeType type);
 	void ShowTable(const std::vector<Product*>& source, int num, const char* texts[], bool showTexts[]);
 	void ShowSearch(std::vector<StockChange*> &source, StockChangeType type, std::string& searchString);
+	void ShowSearchAll();
 	void ShowSearch(std::vector<Product*>& source, std::string& searchString);
+
+	void SetTimeRange();
 private:
 	friend class Serializer;
 	DataManager* m_DataM;
@@ -70,13 +64,21 @@ private:
 
 	const char* m_TypeNames[3] = { u8"Minden", u8"Bejövö", u8"Kimenö" };
 
+	const char* m_TimeRangeNames[10] = {u8"Minden", u8"Ma", u8"Tegnap", u8"Ez a hét", u8"Múlt hét", u8"Ez a hónap", 
+		u8"Múlt hónap", u8"Ez az év", u8"Múlt év", u8"Egyéni"};
+
 	std::string m_SearchStringIN;
 	std::string m_SearchStringOUT;
 	std::string m_SearchStringANY;
 	std::string m_SearchStringPr;
 
 	ChangeData m_ChangeData;
+	ProductData m_ProductData;
 
 	Product* m_Productptr;
 	bool m_OnStock = false;
+
+	int m_TimeRange = 0;
+	int m_SearchType = 0;
+	Date m_StartDate, m_EndDate;
 };

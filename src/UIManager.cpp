@@ -135,6 +135,12 @@ void UIManager::Update()
 		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.0f, 0.0f, 0.0f, 1.0f));
 		if (ImGui::BeginTabItem("Mozgások összegzése"))
 		{
+			WhatToShow(5, m_TextsAllChange, m_ShowTextsAllChange);
+			ImGui::SameLine();
+			ShowSearchAll();
+
+			ShowTable(m_DataM->GetChangesANY(), 5, m_TextsAllChange, m_ShowTextsAllChange, StockChangeType::ANY);
+
 			ImGui::EndTabItem();
 		}
 		ImGui::PopStyleColor();
@@ -145,6 +151,7 @@ void UIManager::Update()
 			if (ImGui::Button("Új termék hozzaadása"))
 			{
 				m_State = UIStates::AddProduct;
+				m_ProductData.Reset();
 			}
 			ImGui::SameLine();
 			WhatToShow(5, m_TextsProduct, m_ShowTextsProduct);
@@ -309,17 +316,214 @@ void UIManager::AddChangeWindow()
 
 void UIManager::EditChangeWindow()
 {
+	ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.0f, 0.0f, 0.0f, 1.0f));
 
+	ImGui::OpenPopup("Edit change window");
+	if (ImGui::BeginPopupModal("Edit change window"))
+	{
+		static bool errorCount = false;
+		static int prevCount = m_ChangeData.Count;
+		
+		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
+		ImGui::Text("Név: %s", m_ChangeData.Name.c_str());
+		ImGui::Text("Vonalkód: %s", m_ChangeData.Barcode.c_str());
+		ImGui::PopStyleColor();
+
+		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
+		ImGui::Text("Darabszám:"); ImGui::SameLine();
+		ImGui::PopStyleColor();
+		ImGui::InputInt("##1", &m_ChangeData.Count);
+		if (m_ChangeData.Count < 0) m_ChangeData.Count = 0;
+
+		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
+		ImGui::Text("Dátum: %s", m_ChangeData.Time.ToString().c_str());
+		ImGui::Text("Mozgás típusa: %s", m_TypeNames[(int)m_ChangeData.Type]);
+		ImGui::PopStyleColor();
+
+		if (ImGui::Button("Ok"))
+		{
+			if ((m_ChangeData.Type == StockChangeType::OUT && m_Productptr->GetCount() < m_ChangeData.Count)) errorCount = true;
+			else
+			{
+				m_DataM->GetUpdates()[m_ChangeData.Time].m_Count = m_ChangeData.Count;
+
+				if (m_ChangeData.Type == StockChangeType::OUT)
+				{
+					m_Productptr->SetCount(m_Productptr->GetCount() + prevCount);
+					m_Productptr->SetCount(m_Productptr->GetCount() - m_ChangeData.Count);
+				}
+				else
+				{
+					m_Productptr->SetCount(m_Productptr->GetCount() - prevCount);
+					m_Productptr->SetCount(m_Productptr->GetCount() + m_ChangeData.Count);
+				}
+				errorCount = false;
+				m_Productptr = nullptr;
+			}
+			
+			if (!errorCount)
+			{
+				m_State = UIStates::NoState;
+				ImGui::CloseCurrentPopup();
+			}
+			m_DataM->FillChangesANY();
+			if (m_ChangeData.Type == StockChangeType::OUT) m_DataM->FillChangesOUT();
+			else m_DataM->FillChangesIN();
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Mégse"))
+		{
+			m_State = UIStates::NoState;
+			ImGui::CloseCurrentPopup();
+		}
+
+		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
+		if (errorCount) ImGui::Text("Nem lehet többet eladni a termékböl, mint amennyi készleten van!");
+		ImGui::PopStyleColor();
+
+		ImGui::EndPopup();
+	}
+
+	ImGui::PopStyleColor();
 }
 
 void UIManager::AddProductWindow()
 {
+	ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.0f, 0.0f, 0.0f, 1.0f));
 
+	ImGui::OpenPopup("Add product window");
+	if (ImGui::BeginPopupModal("Add product window"))
+	{
+		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
+		ImGui::Text("Adja meg/ módosítsa az adatokat:");
+		ImGui::Text("Név:"); ImGui::SameLine();
+		ImGui::PopStyleColor();
+		ImGui::InputText("##1", &m_ProductData.Name);
+
+		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
+		ImGui::Text("Vonalkód:"); ImGui::SameLine();
+		ImGui::PopStyleColor();
+		ImGui::InputText("##2", &m_ProductData.Barcode);
+
+		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
+		ImGui::Text("Vétel ár:"); ImGui::SameLine();
+		ImGui::PopStyleColor();
+		ImGui::InputFloat("##4", &m_ProductData.BuyPrice);
+
+		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
+		ImGui::Text("Eladási ár:"); ImGui::SameLine();
+		ImGui::PopStyleColor();
+		ImGui::InputFloat("##5", &m_ProductData.SellPrice, 0.0f, 0.0f, "%.2f");
+
+		static bool errorEmpty = false;
+		if (ImGui::Button("Ok"))
+		{
+			if (m_ProductData.Name == "") errorEmpty = true;
+			else
+			{
+				uint32_t id = Product::GetNewID();
+				Product pr(id, m_ProductData.Barcode, m_ProductData.Name, m_ProductData.Count,
+					m_ProductData.BuyPrice, m_ProductData.SellPrice);
+				m_DataM->AddProduct(pr);
+				m_DataM->FillProductPtrs(m_OnStock);
+				ImGui::CloseCurrentPopup();
+				m_State = UIStates::NoState;
+				errorEmpty = false;
+			}
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Mégse"))
+		{
+			ImGui::CloseCurrentPopup();
+			m_State = UIStates::NoState;
+			errorEmpty = false;
+		}
+
+		if (errorEmpty)
+		{
+			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
+			ImGui::Text("Nem adhatsz a termékkészlethez üres terméket!");
+			ImGui::PopStyleColor();
+		}
+
+		ImGui::EndPopup();
+	}
+
+	ImGui::PopStyleColor();
 }
 
 void UIManager::EditProductWindow()
 {
+	ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.0f, 0.0f, 0.0f, 1.0f));
 
+	ImGui::OpenPopup("Edit product window");
+	if (ImGui::BeginPopupModal("Edit product window"))
+	{
+		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
+		ImGui::Text("Adja meg/ módosítsa az adatokat:");
+		ImGui::Text("Név:"); ImGui::SameLine();
+		ImGui::PopStyleColor();
+		ImGui::InputText("##1", &m_ProductData.Name);
+
+		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
+		ImGui::Text("Vonalkód:"); ImGui::SameLine();
+		ImGui::PopStyleColor();
+		ImGui::InputText("##2", &m_ProductData.Barcode);
+
+		if (m_State == UIStates::EditProduct)
+		{
+			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
+			ImGui::Text("Darab:"); ImGui::SameLine();
+			ImGui::PopStyleColor();
+			ImGui::InputInt("##3", &m_ProductData.Count);
+		}
+
+		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
+		ImGui::Text("Vétel ár:"); ImGui::SameLine();
+		ImGui::PopStyleColor();
+		ImGui::InputFloat("##4", &m_ProductData.BuyPrice);
+
+		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
+		ImGui::Text("Eladási ár:"); ImGui::SameLine();
+		ImGui::PopStyleColor();
+		ImGui::InputFloat("##5", &m_ProductData.SellPrice, 0.0f, 0.0f, "%.2f");
+
+		static bool errorEmpty = false;
+		if (ImGui::Button("Ok"))
+		{
+			if (m_ProductData.Name == "") errorEmpty = true;
+			else
+			{
+				if (m_DataM->GetProducts().count(m_ProductData.ID) > 0)
+				{
+					m_DataM->GetProducts()[m_ProductData.ID].Set(m_ProductData.Name, m_ProductData.Barcode, m_ProductData.Count,
+						m_ProductData.BuyPrice, m_ProductData.SellPrice);
+				}
+
+				m_DataM->FillProductPtrs(m_OnStock);
+				ImGui::CloseCurrentPopup();
+				m_State = UIStates::NoState;
+				errorEmpty = false;
+			}
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Mégse"))
+		{
+			ImGui::CloseCurrentPopup();
+			m_State = UIStates::NoState;
+			errorEmpty = false;
+		}
+
+		if (errorEmpty)
+		{
+			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
+			ImGui::Text("Nem adhatsz a termékkészlethez üres terméket!");
+			ImGui::PopStyleColor();
+		}
+		ImGui::EndPopup();
+	}
+
+	ImGui::PopStyleColor();
 }
 
 void UIManager::SettingsWindow()
@@ -453,14 +657,17 @@ void UIManager::ShowTable(const std::vector<StockChange*>& source, int num, cons
 			if (ImGui::SmallButton(name.c_str()))
 			{
 				m_State = UIStates::EditChange;
-				//s_Type = StockChangeType::IN;
-				//s_ChangeData.Set(*(*it));
+				m_ChangeData.Set((*it));
+				m_Productptr = (*it)->m_Product;
 			}
 			ImGui::SameLine();
 			name = "Töröl##" + std::to_string(j);
 			if (ImGui::SmallButton(name.c_str()))
 			{
 				m_DataM->DeleteStockChange((*it)->GetDate());
+				m_DataM->FillChangesANY();
+				if (type == StockChangeType::IN) m_DataM->FillChangesIN();
+				else m_DataM->FillChangesOUT();
 				ImGui::PopStyleColor();
 				ImGui::PopStyleColor();
 				break;
@@ -538,6 +745,7 @@ void UIManager::ShowTable(const std::vector<Product*>& source, int num, const ch
 			if (ImGui::SmallButton(name.c_str()))
 			{
 				m_State = UIStates::EditProduct;
+				m_ProductData.Set((*it));
 			}
 			ImGui::SameLine();
 			name = "Töröl##" + std::to_string(j);
@@ -608,6 +816,74 @@ void UIManager::ShowSearch(std::vector<StockChange*> &source, StockChangeType ty
 	ImGui::EndGroup();
 }
 
+void UIManager::ShowSearchAll()
+{
+	ImGui::BeginGroup();
+
+	static int form = 0;
+
+	if (ImGui::Button("Keresés"))
+	{
+		switch (form)
+		{
+		case 0:
+			SetTimeRange();
+			m_DataM->SearchByBarcode(m_DataM->GetChangesANY(), m_StartDate, m_EndDate, (StockChangeType)m_SearchType, m_SearchStringANY);
+			break;
+		case 1:
+			SetTimeRange();
+			m_DataM->SearchByName(m_DataM->GetChangesANY(), m_StartDate, m_EndDate, (StockChangeType)m_SearchType, m_SearchStringANY);
+			break;
+		case 2:
+			m_DataM->SearchByDate(m_DataM->GetChangesANY(), (StockChangeType)m_SearchType, m_SearchStringANY);
+			break;
+		}
+	}
+	ImGui::SameLine();
+	ImGui::InputText("##", &m_SearchStringANY);
+	ImGui::SameLine();
+	if (ImGui::Button("Keresés vege"))
+	{
+		m_SearchStringANY.clear();
+		m_DataM->FillChangesANY();
+	}
+	ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
+	ImGui::Text("Keresési forma:"); ImGui::SameLine();
+	ImGui::RadioButton("Vonalkód szerint", &form, 0); ImGui::SameLine();
+	ImGui::RadioButton("Név szerint", &form, 1); ImGui::SameLine();
+	ImGui::RadioButton("Dátum szerint", &form, 2);
+	ImGui::PopStyleColor();
+
+	ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
+	static bool showDatePicker = false;
+	ImGui::Text("Idö intevallum:"); ImGui::SameLine(); ImGui::PopStyleColor();
+	if (form == 2) showDatePicker = false;
+	if (form != 2 && ImGui::Combo("##10", &m_TimeRange, m_TimeRangeNames, 10))
+	{
+		if (m_TimeRange == (int)TimeRanges::COSTUM) showDatePicker = true;
+		else showDatePicker = false;
+	}
+
+	if (showDatePicker)
+	{
+		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
+		ImGui::Text("Kezdö dátum:"); ImGui::SameLine();
+		ImGui::PopStyleColor();
+		ImGui::InputInt3("##111", &m_StartDate.Year);
+		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
+		ImGui::Text("Záró dátum:"); ImGui::SameLine();
+		ImGui::PopStyleColor();
+		ImGui::InputInt3("##112", &m_EndDate.Year);
+	}
+
+	ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
+	ImGui::Text("Típus:"); ImGui::SameLine();
+	ImGui::PopStyleColor();
+	ImGui::Combo("##11", &m_SearchType, m_TypeNames, 3);
+
+	ImGui::EndGroup();
+}
+
 void UIManager::ShowSearch(std::vector<Product*>& source, std::string& searchString)
 {
 	ImGui::BeginGroup();
@@ -648,6 +924,66 @@ void UIManager::ShowSearch(std::vector<Product*>& source, std::string& searchStr
 	ImGui::PopStyleColor();
 
 	ImGui::EndGroup();
+}
+
+void UIManager::SetTimeRange()
+{
+	switch (m_TimeRange)
+	{
+	case (int)TimeRanges::ALL:
+		m_StartDate.Set(1990, 1, 1, 0, 0, 0);
+		m_EndDate = Date::GetCurrrentDate();
+		break;
+	case (int)TimeRanges::TODAY:
+		m_StartDate.Set(Date::GetCurrrentDate().Year, Date::GetCurrrentDate().Month, Date::GetCurrrentDate().Day, 0, 0, 0);
+		m_EndDate = Date::GetCurrrentDate();
+		break;
+	case (int)TimeRanges::YESTERDAY:
+		m_StartDate = Date::GetCurrrentDate();
+		m_StartDate.Set(Date::GetCurrrentDate().Year, Date::GetCurrrentDate().Month, Date::GetCurrrentDate().Day - 1, 0, 0, 0);
+		m_EndDate.Set(Date::GetCurrrentDate().Year, Date::GetCurrrentDate().Month, Date::GetCurrrentDate().Day, 0, 0, 0);
+		break;
+	case (int)TimeRanges::THIS_WEEK:
+		m_StartDate = Date::GetCurrrentDate();
+		for (int i = 0; i < Date::GetCurrentDayOfWeek(); i++) m_StartDate--;
+		m_EndDate = Date::GetCurrrentDate();
+		break;
+	case (int)TimeRanges::LAST_WEEK:
+		m_StartDate = Date::GetCurrrentDate();
+		m_EndDate = Date::GetCurrrentDate();
+		for (int i = 0; i < Date::GetCurrentDayOfWeek(); i++)
+		{
+			m_StartDate--;
+			m_EndDate--;
+		}
+		for (int i = 0; i < 7; i++) m_StartDate--;
+		break;
+	case (int)TimeRanges::THIS_MONTH:
+		m_StartDate = Date::GetCurrrentDate();
+		for (int i = 0; i < Date::GetCurrentDayOfMonth(); i++) m_StartDate--;
+		m_EndDate = Date::GetCurrrentDate();
+		break;
+	case (int)TimeRanges::LAST_MONTH:
+		m_StartDate = Date::GetCurrrentDate();
+		m_EndDate = Date::GetCurrrentDate();
+		for (int i = 0; i < Date::GetDayOfMonth(m_StartDate.Month); i++)
+		{
+			m_StartDate--;
+			m_EndDate--;
+		}
+		for (int i = 0; i < Date::GetDayOfMonth(Date::GetCurrrentDate().Month - 1); i++) m_StartDate--;
+		break;
+	case (int)TimeRanges::THIS_YEAR:
+		m_StartDate.Set(Date::GetCurrrentDate().Year, 1, 1, 0, 0, 0);
+		m_EndDate = Date::GetCurrrentDate();
+		break;
+	case (int)TimeRanges::LAST_YEAR:
+		m_StartDate.Set(Date::GetCurrrentDate().Year - 1, 12, 31, 0, 0, 0);
+		m_EndDate.Set(Date::GetCurrrentDate().Year - 1, 1, 1, 0, 0, 0);
+		break;
+	default:
+		break;
+	}
 }
 
 void UIManager::SetupStyle()
@@ -703,23 +1039,4 @@ void UIManager::SetupStyle()
 	colors[ImGuiCol_HeaderHovered] = paletteColors[(int)Colors::Turkiz];
 	colors[ImGuiCol_SliderGrab] = paletteColors[(int)Colors::Turkiz];
 	colors[ImGuiCol_SliderGrabActive] = paletteColors[(int)Colors::Turkiz];
-}
-
-
-void ChangeData::Set(StockChange* change)
-{
-	Name = change->GetProduct()->GetName();
-	Barcode = change->GetProduct()->GetBarcode();
-	Count = change->GetCount();
-	Time = change->GetDate();
-	Type = change->GetType();
-}
-
-void ChangeData::Reset(StockChangeType type)
-{
-	Name.clear();
-	Barcode.clear();
-	Count = 0;
-	Time = Date::GetCurrrentDate();
-	Type = type;
 }
