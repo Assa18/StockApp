@@ -8,6 +8,19 @@
 #include <vector>
 #include <array>
 
+struct ProductStats
+{
+	Date StartDate, EndDate;
+	int CountIN, CountOUT;
+	double ValueIN, ValueOUT;
+};
+
+struct YearStats
+{
+	uint32_t Year;
+	double ValueIN, ValueOUT;
+};
+
 class DataManager
 {
 public:
@@ -56,6 +69,14 @@ public:
 	void SearchByBarcode(std::vector<StockChange*>& source, const Date& startDate, const Date& endDate, 
 		StockChangeType type, const std::string& barcode);
 	void SearchByDate(std::vector<StockChange*>& source, StockChangeType type, const std::string& date);
+
+	//stats
+	std::map<Product*, ProductStats>& GetMonthStats() { return m_MonthStats; }
+	std::map<int, std::map<Product*, ProductStats>>& GetYearStats() { return m_YearStats; }
+	std::map<Product*, ProductStats>& GetCostumStats() { return m_CostumStats; }
+
+	void CalculateStats();
+	void CalculateStats(const Date& startDate, const Date& endDate);
 private:
 	std::vector<StockChange*> m_ChangesIN;
 	std::vector<StockChange*> m_ChangesOUT;
@@ -66,54 +87,8 @@ private:
 	std::map<uint32_t, Product> m_Storage;
 	std::map<Date, StockChange> m_Changes;
 
-public:
-	struct ProductStats
-	{
-		ProductStats()
-		{
-			product = nullptr;
-			INCount = 0;
-			OUTCount = 0;
-			TotalBuyPrice = 0;
-			TotalSellPrice = 0;
-		}
-
-		ProductStats(Product* pr)
-		{
-			product = pr;
-			INCount = 0;
-			OUTCount = 0;
-			TotalBuyPrice = 0;
-			TotalSellPrice = 0;
-		}
-
-		Product* product;
-		uint32_t INCount, OUTCount;
-		double TotalBuyPrice, TotalSellPrice;
-	};
-
-	struct MonthStat
-	{
-		std::map<uint32_t, ProductStats> Stats;
-		double TotalBuyings, TotalSellings;
-	};
-
-	struct YearStat
-	{
-		std::array<MonthStat, 12> Months;
-		double TotalBuyings, TotalSellings;
-	};
-private:
-	std::map<int, YearStat> m_StatsPerYears;
-public:
-	void ClearStats();
-	void CalculateStats();
-	std::map<uint32_t, ProductStats> CalculateStats(const Date& beginning, const Date& ending);
-
-	std::map<int, YearStat>& GetYearStats();
-	const std::map<int, YearStat>& GetYearStats() const;
-
-	std::map<int, ProductStats> GetStatsYear(Product* pr);
-	std::map<std::pair<int,int>, ProductStats> GetStatsMonth(Product* pr);
-	ProductStats GetStatsCostum(Product* pr, const Date& start, const Date& end);
+	//stats
+	std::map<Product*, ProductStats> m_MonthStats;
+	std::map<int, std::map<Product*, ProductStats>> m_YearStats;
+	std::map<Product*, ProductStats> m_CostumStats;
 };

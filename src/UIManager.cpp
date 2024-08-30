@@ -84,7 +84,6 @@ void UIManager::Update()
 			if (ImGui::MenuItem("Összegzés"))
 			{
 				m_State = UIStates::Overall;
-				m_DataM->ClearStats();
 				m_DataM->CalculateStats();
 			}
 			ImGui::EndMenu();
@@ -557,7 +556,268 @@ void UIManager::SettingsWindow()
 
 void UIManager::OverallWindow()
 {
+	ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.0f, 0.0f, 0.0f, 1.0f));
+	ImGui::OpenPopup("Összegzések");
+	if (ImGui::BeginPopupModal("Összegzések"))
+	{
+		if (ImGui::Button("Bezár"))
+		{
+			m_State = UIStates::NoState;
+		}
 
+		ImGui::SameLine();
+		WhatToShow(8, m_OverallTexts, m_ShowOverallTexts);
+		ImGui::SameLine();
+		ImGui::BeginGroup();
+
+		static int form = 0;
+		if (ImGui::Button("Keresés"))
+		{
+			m_OnStock = false;
+			switch (form)
+			{
+			case 0:
+				m_DataM->SearchProductBarcode(m_DataM->GetProductPtrs(), m_SearchStringOverall);
+				break;
+			case 1:
+				m_DataM->SearchProductName(m_DataM->GetProductPtrs(), m_SearchStringOverall);
+				break;
+			default:
+				break;
+			}
+		}
+		ImGui::SameLine();
+		ImGui::InputText("##", &m_SearchStringOverall);
+
+		ImGui::SameLine();
+		if (ImGui::Button("Keresés vége"))
+		{
+			m_DataM->FillProductPtrs(m_OnStock);
+			m_SearchStringOverall.clear();
+		}
+		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
+		ImGui::Text("Keresési forma:"); ImGui::SameLine();
+		ImGui::RadioButton("Vonalkód szerint", &form, 0); ImGui::SameLine();
+		ImGui::RadioButton("Név szerint", &form, 1);
+		ImGui::PopStyleColor();
+
+		ImGui::EndGroup();
+
+		if (ImGui::BeginTabBar("overall"))
+		{
+			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.0f, 0.0f, 0.0f, 1.0f));
+			if (ImGui::BeginTabItem("Évi lebontás"))
+			{
+				DisplayYearStats();
+				ImGui::EndTabItem();
+			}
+			ImGui::PopStyleColor();
+
+			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.0f, 0.0f, 0.0f, 1.0f));
+			if (ImGui::BeginTabItem("Havi lebontás"))
+			{
+				ImGui::EndTabItem();
+			}
+			ImGui::PopStyleColor();
+
+			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.0f, 0.0f, 0.0f, 1.0f));
+			if (ImGui::BeginTabItem("Egyéni lebontás"))
+			{
+				static bool showTable = false;
+				ImGui::BeginGroup();
+				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
+				ImGui::Text("Kezdö dátum:"); ImGui::SameLine();
+				ImGui::PopStyleColor();
+				ImGui::InputInt3("##111", &m_StartDate.Year);
+				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
+				ImGui::Text("Záró dátum:"); ImGui::SameLine();
+				ImGui::PopStyleColor();
+				ImGui::InputInt3("##112", &m_EndDate.Year);
+				ImGui::EndGroup();
+				ImGui::SameLine();
+				if (ImGui::Button("Dátum beállítása"))
+				{
+					m_DataM->CalculateStats(m_StartDate, m_EndDate);
+					showTable = true;
+				}
+
+				static float overallBuys = 0.0f, overallSells = 0.0f;
+				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
+				ImGui::Text("Ebben az idöszakban %.2f értékben volt áru vásárolva.", overallBuys);
+				ImGui::Text("Ebben az idöszakban %.2f értékben volt áru eladva.", overallSells);
+				ImGui::PopStyleColor();
+
+				overallBuys = 0.0f, overallSells = 0.0f;
+				if (showTable)
+				{
+					DisplayCostumStats(overallBuys, overallSells);
+				}
+
+				ImGui::EndTabItem();
+			}
+			ImGui::PopStyleColor();
+
+
+			ImGui::EndTabBar();
+		}
+
+		ImGui::EndPopup();
+	}
+	ImGui::PopStyleColor();
+}
+
+void UIManager::DisplayYearStats()
+{
+	ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.0f, 0.0f, 0.0f, 1.0f));
+
+	/*
+	int nrColumns = 0;
+	for (int i = 0; i < 8; i++)
+	{
+		nrColumns += m_ShowOverallTexts[i];
+	}
+	static ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg;
+
+	if (ImGui::BeginTable("table", nrColumns + 1, flags))
+	{
+		for (int i = 0; i < 8; i++)
+		{
+			if (m_ShowOverallTexts[i]) ImGui::TableSetupColumn(m_OverallTexts[i]);
+		}
+		ImGui::TableHeadersRow();
+
+		int j = 0;
+		std::map<Product*, YearStats>::iterator
+		for (it = m_DataM->GetProductPtrs().rbegin(); it != m_DataM->GetProductPtrs().rend(); it++)
+		{
+			ImGui::TableNextRow();
+			if (m_ShowOverallTexts[0])
+			{
+				ImGui::TableNextColumn();
+				ImGui::Text("%s", (*it)->GetProduct()->GetBarcode().c_str());
+			}
+
+			if (m_ShowOverallTexts[1])
+			{
+				ImGui::TableNextColumn();
+				ImGui::Text("%s", (*it)->GetProduct()->GetName().c_str());
+			}
+
+			if (m_ShowOverallTexts[2])
+			{
+				ImGui::TableNextColumn();
+				ImGui::Text("%.2f", (*it)->GetProduct()->GetBuyPrice());
+			}
+
+			if (m_ShowOverallTexts[3])
+			{
+				ImGui::TableNextColumn();
+				ImGui::Text("%d", (*it)->GetCount());
+			}
+
+			if (m_ShowOverallTexts[4])
+			{
+				ImGui::TableNextColumn();
+				ImGui::Text("%s", (*it)->GetDate().ToString().c_str());
+			}
+
+			if (m_ShowOverallTexts[5])
+			{
+				ImGui::TableNextColumn();
+				ImGui::Text("%s", m_TypeNames[(int)(*it)->GetType()]);
+			}
+
+			if (m_ShowOverallTexts[6])
+			{
+				ImGui::TableNextColumn();
+				ImGui::Text("%d", (*it)->GetCount());
+			}
+
+			if (m_ShowOverallTexts[7])
+			{
+				ImGui::TableNextColumn();
+				ImGui::Text("%s", (*it)->GetDate().ToString().c_str());
+			}
+
+		}
+	}*/
+	ImGui::PopStyleColor();
+}
+
+void UIManager::DisplayCostumStats(float& buyings, float& sellings)
+{
+	int nrColumns = 0;
+	for (int i = 0; i < 8; i++)
+	{
+		nrColumns += m_ShowOverallTexts[i];
+	}
+	static ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg;
+
+	if (ImGui::BeginTable("table", nrColumns, flags))
+	{
+		for (int i = 0; i < 8; i++)
+		{
+			if (m_ShowOverallTexts[i]) ImGui::TableSetupColumn(m_OverallTexts[i]);
+		}
+		ImGui::TableHeadersRow();
+
+		std::vector<Product*>::iterator it;
+		for (it = m_DataM->GetProductPtrs().begin(); it != m_DataM->GetProductPtrs().end(); it++)
+		{
+			ProductStats& stats = m_DataM->GetCostumStats()[(*it)];
+			ImGui::TableNextRow();
+			if (m_ShowOverallTexts[0])
+			{
+				ImGui::TableNextColumn();
+				ImGui::Text("%s", (*it)->GetBarcode().c_str());
+			}
+
+			if (m_ShowOverallTexts[1])
+			{
+				ImGui::TableNextColumn();
+				ImGui::Text("%s", (*it)->GetName().c_str());
+			}
+
+			if (m_ShowOverallTexts[2])
+			{
+				ImGui::TableNextColumn();
+				ImGui::Text("%.2f", (*it)->GetBuyPrice());
+			}
+
+			if (m_ShowOverallTexts[3])
+			{
+				ImGui::TableNextColumn();
+				ImGui::Text("%d", stats.CountIN);
+			}
+
+			if (m_ShowOverallTexts[4])
+			{
+				ImGui::TableNextColumn();
+				ImGui::Text("%.2f", stats.ValueIN);
+			}
+
+			if (m_ShowOverallTexts[5])
+			{
+				ImGui::TableNextColumn();
+				ImGui::Text("%.2f", (*it)->GetSellPrice());
+			}
+
+			if (m_ShowOverallTexts[6])
+			{
+				ImGui::TableNextColumn();
+				ImGui::Text("%d", stats.CountOUT);
+			}
+
+			if (m_ShowOverallTexts[7])
+			{
+				ImGui::TableNextColumn();
+				ImGui::Text("%.2f", stats.ValueOUT);
+			}
+			buyings += stats.ValueIN;
+			sellings += stats.ValueOUT;
+		}
+		ImGui::EndTable();
+	}
 }
 
 void UIManager::WhatToShow(int num, const char* texts[], bool booleans[])

@@ -47,6 +47,9 @@ private:
 	void ShowSearch(std::vector<Product*>& source, std::string& searchString);
 
 	void SetTimeRange();
+
+	void DisplayYearStats();
+	void DisplayCostumStats(float& buyings, float& sellings);
 private:
 	friend class Serializer;
 	DataManager* m_DataM;
@@ -67,10 +70,15 @@ private:
 	const char* m_TimeRangeNames[10] = {u8"Minden", u8"Ma", u8"Tegnap", u8"Ez a hét", u8"Múlt hét", u8"Ez a hónap", 
 		u8"Múlt hónap", u8"Ez az év", u8"Múlt év", u8"Egyéni"};
 
+	const char* m_OverallTexts[8] = { u8"Vonalkód", u8"Név", u8"Vétel ár", u8"Bejövö darabszám", u8"Össz vétel ár",
+		u8"Eladási ár", u8"Kimenö darabszám", u8"Össz eladási ár" };
+	bool m_ShowOverallTexts[8] = { true,true,true,true,true,true,true,true };
+
 	std::string m_SearchStringIN;
 	std::string m_SearchStringOUT;
 	std::string m_SearchStringANY;
 	std::string m_SearchStringPr;
+	std::string m_SearchStringOverall;
 
 	ChangeData m_ChangeData;
 	ProductData m_ProductData;
