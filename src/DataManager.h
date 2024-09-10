@@ -10,7 +10,6 @@
 
 struct ProductStats
 {
-	Date StartDate, EndDate;
 	int CountIN, CountOUT;
 	double ValueIN, ValueOUT;
 };

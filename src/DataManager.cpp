@@ -17,19 +17,27 @@ void DataManager::AddProduct(Product product)
 
 void DataManager::DeleteProduct(uint32_t id)
 {
-	//TODO: fix deleteing, find a way, or leave it
-
-	/*Product* pr = &m_Storage[id];
+	Product* pr = &m_Storage[id];
+	std::map<Date, StockChange> temp;
 	std::map<Date, StockChange>::iterator it;
-	it = m_Changes.begin();
-	while (it != m_Changes.end())
+	for (it = m_Changes.begin(); it != m_Changes.end(); it++)
 	{
-		if ((*it).second.GetProduct() == pr)
-			m_Changes.erase((*it).second.GetDate());
-		else it++;
-	}*/
+		if ((*it).second.GetProduct() != pr)
+			temp[(*it).first] = (*it).second;
+	}
+	m_Changes.clear();
+	for (it = temp.begin(); it != temp.end(); it++)
+	{
+		if ((*it).second.GetProduct() != pr)
+			m_Changes[(*it).first] = (*it).second;
+	}
 
 	m_Storage.erase(id);
+
+	FillChangesIN();
+	FillChangesOUT();
+	FillChangesANY();
+	FillProductPtrs(false);
 }
 
 int DataManager::GetNumOfProducts() const

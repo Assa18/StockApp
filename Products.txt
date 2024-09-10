@@ -1,4 +1,4 @@
-Number of products: 8
+Number of products: 6
 {
 	ID:	1
 	Nev:	Ceruzahegy
@@ -17,7 +17,7 @@ Number of products: 8
 }
 {
 	ID:	3
-	Nev:	Könyv - The hunger games 230 dfgj dshgfDFHD
+	Nev:	Könyv - The hunger games
 	Vonalkod:	9789635980840
 	Darabszam:	1
 	Vetel_ar:	40
@@ -27,7 +27,7 @@ Number of products: 8
 	ID:	4
 	Nev:	Viz-Perla
 	Vonalkod:	5
-	Darabszam:	14
+	Darabszam:	17
 	Vetel_ar:	3
 	Eladasi_ar:	5.1
 }
@@ -46,20 +46,4 @@ Number of products: 8
 	Darabszam:	4
 	Vetel_ar:	18.4
 	Eladasi_ar:	20.89
-}
-{
-	ID:	7
-	Nev:	bsdfjsdfvjadgfjksd
-	Vonalkod:	515435745712
-	Darabszam:	0
-	Vetel_ar:	23.5
-	Eladasi_ar:	30.5
-}
-{
-	ID:	8
-	Nev:	test
-	Vonalkod:	1243543
-	Darabszam:	0
-	Vetel_ar:	12
-	Eladasi_ar:	34
 }

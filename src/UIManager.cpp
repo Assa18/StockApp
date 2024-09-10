@@ -676,7 +676,7 @@ void UIManager::DisplayYearStats()
 	{
 		nrColumns += m_ShowOverallTexts[i];
 	}
-	static ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg;
+	static ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_Resizable;
 
 	std::map<int, std::map<Product*, ProductStats>>::reverse_iterator it;
 	for (it = m_DataM->GetYearStats().rbegin(); it != m_DataM->GetYearStats().rend(); it++)
@@ -771,7 +771,7 @@ void UIManager::DisplayMonthStats()
 	{
 		nrColumns += m_ShowOverallTexts[i];
 	}
-	static ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg;
+	static ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_Resizable;
 
 	std::map<MonthPair, std::map<Product*, ProductStats>>::reverse_iterator it;
 	for (it = m_DataM->GetMonthStats().rbegin(); it != m_DataM->GetMonthStats().rend(); it++)
@@ -864,7 +864,7 @@ void UIManager::DisplayCostumStats(float& buyings, float& sellings)
 	{
 		nrColumns += m_ShowOverallTexts[i];
 	}
-	static ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg;
+	static ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_Resizable;
 
 	if (ImGui::BeginTable("table", nrColumns, flags))
 	{
@@ -959,7 +959,7 @@ void UIManager::ShowTable(const std::vector<StockChange*>& source, int num, cons
 	{
 		nrColumns += showTexts[i];
 	}
-	static ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg;
+	static ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_Resizable;
 
 	if (ImGui::BeginTable("table", nrColumns + 1, flags))
 	{
@@ -1065,7 +1065,7 @@ void UIManager::ShowTable(const std::vector<Product*>& source, int num, const ch
 	{
 		nrColumns += showTexts[i];
 	}
-	static ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg;
+	static ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_Resizable;
 
 	if (ImGui::BeginTable("table", nrColumns + 1, flags))
 	{
@@ -1124,6 +1124,7 @@ void UIManager::ShowTable(const std::vector<Product*>& source, int num, const ch
 			name = "Töröl##" + std::to_string(j);
 			if (ImGui::SmallButton(name.c_str()))
 			{
+				m_DataM->DeleteProduct((*it)->GetID());
 				ImGui::PopStyleColor();
 				ImGui::PopStyleColor();
 				break;

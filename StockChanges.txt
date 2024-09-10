@@ -1,4 +1,4 @@
-Number of changes: 20
+Number of changes: 19
 {
 	Termek_ID:	4
 	Datum:	2023.8.9 18:41:21
@@ -22,12 +22,6 @@ Number of changes: 20
 	Datum:	2024.8.9 18:47:4
 	Darab:	4
 	Tipus:	1
-}
-{
-	Termek_ID:	4
-	Datum:	2024.8.9 18:47:35
-	Darab:	3
-	Tipus:	2
 }
 {
 	Termek_ID:	4
