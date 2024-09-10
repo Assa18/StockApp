@@ -616,6 +616,7 @@ void UIManager::OverallWindow()
 			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.0f, 0.0f, 0.0f, 1.0f));
 			if (ImGui::BeginTabItem("Havi lebontás"))
 			{
+				DisplayMonthStats();
 				ImGui::EndTabItem();
 			}
 			ImGui::PopStyleColor();
@@ -669,8 +670,7 @@ void UIManager::OverallWindow()
 void UIManager::DisplayYearStats()
 {
 	ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.0f, 0.0f, 0.0f, 1.0f));
-
-	/*
+	
 	int nrColumns = 0;
 	for (int i = 0; i < 8; i++)
 	{
@@ -678,69 +678,182 @@ void UIManager::DisplayYearStats()
 	}
 	static ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg;
 
-	if (ImGui::BeginTable("table", nrColumns + 1, flags))
+	std::map<int, std::map<Product*, ProductStats>>::reverse_iterator it;
+	for (it = m_DataM->GetYearStats().rbegin(); it != m_DataM->GetYearStats().rend(); it++)
 	{
-		for (int i = 0; i < 8; i++)
+		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
+		ImGui::SeparatorText(std::to_string((*it).first).c_str());
+		ImGui::PopStyleColor();
+
+		static float overallBuysYear = 0.0f, overallSellsYear = 0.0f;
+		overallBuysYear = 0.0f, overallSellsYear = 0.0f;
+
+		if (ImGui::BeginTable("table", nrColumns, flags))
 		{
-			if (m_ShowOverallTexts[i]) ImGui::TableSetupColumn(m_OverallTexts[i]);
-		}
-		ImGui::TableHeadersRow();
+			for (int i = 0; i < 8; i++)
+			{
+				if (m_ShowOverallTexts[i]) ImGui::TableSetupColumn(m_OverallTexts[i]);
+			}
+			ImGui::TableHeadersRow();
 
-		int j = 0;
-		std::map<Product*, YearStats>::iterator
-		for (it = m_DataM->GetProductPtrs().rbegin(); it != m_DataM->GetProductPtrs().rend(); it++)
+			std::map<Product*, ProductStats>::iterator itPr;
+			for (itPr = (*it).second.begin(); itPr != (*it).second.end(); itPr++)
+			{
+				ImGui::TableNextRow();
+				if (m_ShowOverallTexts[0])
+				{
+					ImGui::TableNextColumn();
+					ImGui::Text("%s", (*itPr).first->GetBarcode().c_str());
+				}
+
+				if (m_ShowOverallTexts[1])
+				{
+					ImGui::TableNextColumn();
+					ImGui::Text("%s", (*itPr).first->GetName().c_str());
+				}
+
+				if (m_ShowOverallTexts[2])
+				{
+					ImGui::TableNextColumn();
+					ImGui::Text("%.2f", (*itPr).first->GetBuyPrice());
+				}
+
+				if (m_ShowOverallTexts[3])
+				{
+					ImGui::TableNextColumn();
+					ImGui::Text("%d", (*itPr).second.CountIN);
+				}
+
+				if (m_ShowOverallTexts[4])
+				{
+					ImGui::TableNextColumn();
+					ImGui::Text("%.2f", (*itPr).second.ValueIN);
+				}
+
+				if (m_ShowOverallTexts[5])
+				{
+					ImGui::TableNextColumn();
+					ImGui::Text("%.2f", (*itPr).first->GetSellPrice());
+				}
+
+				if (m_ShowOverallTexts[6])
+				{
+					ImGui::TableNextColumn();
+					ImGui::Text("%d", (*itPr).second.CountOUT);
+				}
+
+				if (m_ShowOverallTexts[7])
+				{
+					ImGui::TableNextColumn();
+					ImGui::Text("%.2f", (*itPr).second.ValueOUT);
+				}
+				overallBuysYear += (*itPr).second.ValueIN;
+				overallSellsYear += (*itPr).second.ValueOUT;
+			}
+			ImGui::EndTable();
+		}
+		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
+		ImGui::Text("Ebben az idöszakban %.2f értékben volt áru vásárolva.", overallBuysYear);
+		ImGui::Text("Ebben az idöszakban %.2f értékben volt áru eladva.", overallSellsYear);
+		ImGui::PopStyleColor();
+
+	}
+
+	ImGui::PopStyleColor();
+}
+
+void UIManager::DisplayMonthStats()
+{
+	ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.0f, 0.0f, 0.0f, 1.0f));
+
+	int nrColumns = 0;
+	for (int i = 0; i < 8; i++)
+	{
+		nrColumns += m_ShowOverallTexts[i];
+	}
+	static ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg;
+
+	std::map<MonthPair, std::map<Product*, ProductStats>>::reverse_iterator it;
+	for (it = m_DataM->GetMonthStats().rbegin(); it != m_DataM->GetMonthStats().rend(); it++)
+	{
+		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
+		ImGui::SeparatorText((std::to_string((*it).first.Year) + " " +m_MonthNames[(*it).first.Month-1]).c_str());
+		ImGui::PopStyleColor();
+
+		static float overallBuysMonth = 0.0f, overallSellsMonth = 0.0f;
+		overallBuysMonth = 0.0f, overallSellsMonth = 0.0f;
+
+		if (ImGui::BeginTable("table", nrColumns, flags))
 		{
-			ImGui::TableNextRow();
-			if (m_ShowOverallTexts[0])
+			for (int i = 0; i < 8; i++)
 			{
-				ImGui::TableNextColumn();
-				ImGui::Text("%s", (*it)->GetProduct()->GetBarcode().c_str());
+				if (m_ShowOverallTexts[i]) ImGui::TableSetupColumn(m_OverallTexts[i]);
 			}
+			ImGui::TableHeadersRow();
 
-			if (m_ShowOverallTexts[1])
+			std::map<Product*, ProductStats>::iterator itPr;
+			for (itPr = (*it).second.begin(); itPr != (*it).second.end(); itPr++)
 			{
-				ImGui::TableNextColumn();
-				ImGui::Text("%s", (*it)->GetProduct()->GetName().c_str());
-			}
+				ImGui::TableNextRow();
+				if (m_ShowOverallTexts[0])
+				{
+					ImGui::TableNextColumn();
+					ImGui::Text("%s", (*itPr).first->GetBarcode().c_str());
+				}
 
-			if (m_ShowOverallTexts[2])
-			{
-				ImGui::TableNextColumn();
-				ImGui::Text("%.2f", (*it)->GetProduct()->GetBuyPrice());
-			}
+				if (m_ShowOverallTexts[1])
+				{
+					ImGui::TableNextColumn();
+					ImGui::Text("%s", (*itPr).first->GetName().c_str());
+				}
 
-			if (m_ShowOverallTexts[3])
-			{
-				ImGui::TableNextColumn();
-				ImGui::Text("%d", (*it)->GetCount());
-			}
+				if (m_ShowOverallTexts[2])
+				{
+					ImGui::TableNextColumn();
+					ImGui::Text("%.2f", (*itPr).first->GetBuyPrice());
+				}
 
-			if (m_ShowOverallTexts[4])
-			{
-				ImGui::TableNextColumn();
-				ImGui::Text("%s", (*it)->GetDate().ToString().c_str());
-			}
+				if (m_ShowOverallTexts[3])
+				{
+					ImGui::TableNextColumn();
+					ImGui::Text("%d", (*itPr).second.CountIN);
+				}
 
-			if (m_ShowOverallTexts[5])
-			{
-				ImGui::TableNextColumn();
-				ImGui::Text("%s", m_TypeNames[(int)(*it)->GetType()]);
-			}
+				if (m_ShowOverallTexts[4])
+				{
+					ImGui::TableNextColumn();
+					ImGui::Text("%.2f", (*itPr).second.ValueIN);
+				}
 
-			if (m_ShowOverallTexts[6])
-			{
-				ImGui::TableNextColumn();
-				ImGui::Text("%d", (*it)->GetCount());
-			}
+				if (m_ShowOverallTexts[5])
+				{
+					ImGui::TableNextColumn();
+					ImGui::Text("%.2f", (*itPr).first->GetSellPrice());
+				}
 
-			if (m_ShowOverallTexts[7])
-			{
-				ImGui::TableNextColumn();
-				ImGui::Text("%s", (*it)->GetDate().ToString().c_str());
-			}
+				if (m_ShowOverallTexts[6])
+				{
+					ImGui::TableNextColumn();
+					ImGui::Text("%d", (*itPr).second.CountOUT);
+				}
 
+				if (m_ShowOverallTexts[7])
+				{
+					ImGui::TableNextColumn();
+					ImGui::Text("%.2f", (*itPr).second.ValueOUT);
+				}
+				overallBuysMonth += (*itPr).second.ValueIN;
+				overallSellsMonth += (*itPr).second.ValueOUT;
+			}
+			ImGui::EndTable();
 		}
-	}*/
+		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
+		ImGui::Text("Ebben az idöszakban %.2f értékben volt áru vásárolva.", overallBuysMonth);
+		ImGui::Text("Ebben az idöszakban %.2f értékben volt áru eladva.", overallSellsMonth);
+		ImGui::PopStyleColor();
+
+	}
+
 	ImGui::PopStyleColor();
 }
 

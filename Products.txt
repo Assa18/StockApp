@@ -11,7 +11,7 @@ Number of products: 8
 	ID:	2
 	Nev:	Magyar-kártya
 	Vonalkod:	5999885677009
-	Darabszam:	4
+	Darabszam:	3
 	Vetel_ar:	7
 	Eladasi_ar:	10
 }
@@ -27,7 +27,7 @@ Number of products: 8
 	ID:	4
 	Nev:	Viz-Perla
 	Vonalkod:	5
-	Darabszam:	12
+	Darabszam:	14
 	Vetel_ar:	3
 	Eladasi_ar:	5.1
 }

@@ -259,7 +259,32 @@ void DataManager::CalculateStats()
 	{
 		if ((*it).second.GetType() == StockChangeType::IN)
 		{
-			m_YearStats[(*it).first.Year]
+			m_YearStats[(*it).first.Year][(*it).second.GetProduct()].CountIN += (*it).second.GetCount();
+			m_YearStats[(*it).first.Year][(*it).second.GetProduct()].ValueIN += (*it).second.GetCount() * (*it).second.GetProduct()->GetBuyPrice();
+		}
+		else
+		{
+			m_YearStats[(*it).first.Year][(*it).second.GetProduct()].CountOUT += (*it).second.GetCount();
+			m_YearStats[(*it).first.Year][(*it).second.GetProduct()].ValueOUT += (*it).second.GetCount() * (*it).second.GetProduct()->GetSellPrice();
+		}
+	}
+
+	m_MonthStats.clear();
+	for (it = m_Changes.rbegin(); it != m_Changes.rend(); it++)
+	{
+		if ((*it).second.GetType() == StockChangeType::IN)
+		{
+			m_MonthStats[MonthPair((*it).first.Year, (*it).first.Month)][(*it).second.GetProduct()].CountIN +=
+				(*it).second.GetCount();
+			m_MonthStats[MonthPair((*it).first.Year, (*it).first.Month)][(*it).second.GetProduct()].ValueIN +=
+				(*it).second.GetCount() * (*it).second.GetProduct()->GetBuyPrice();
+		}
+		else
+		{
+			m_MonthStats[MonthPair((*it).first.Year, (*it).first.Month)][(*it).second.GetProduct()].CountOUT +=
+				(*it).second.GetCount();
+			m_MonthStats[MonthPair((*it).first.Year, (*it).first.Month)][(*it).second.GetProduct()].ValueOUT +=
+				(*it).second.GetCount() * (*it).second.GetProduct()->GetSellPrice();
 		}
 	}
 }

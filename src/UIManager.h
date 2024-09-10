@@ -49,6 +49,7 @@ private:
 	void SetTimeRange();
 
 	void DisplayYearStats();
+	void DisplayMonthStats();
 	void DisplayCostumStats(float& buyings, float& sellings);
 private:
 	friend class Serializer;
@@ -73,6 +74,9 @@ private:
 	const char* m_OverallTexts[8] = { u8"Vonalkód", u8"Név", u8"Vétel ár", u8"Bejövö darabszám", u8"Össz vétel ár",
 		u8"Eladási ár", u8"Kimenö darabszám", u8"Össz eladási ár" };
 	bool m_ShowOverallTexts[8] = { true,true,true,true,true,true,true,true };
+
+	std::string m_MonthNames[12] = { "Január", "Február", "Március", "Április", "Május", "Június", "Július", "Augusztus", "Szeptember",
+	"Október", "November", "December" };
 
 	std::string m_SearchStringIN;
 	std::string m_SearchStringOUT;

@@ -15,10 +15,23 @@ struct ProductStats
 	double ValueIN, ValueOUT;
 };
 
-struct YearStats
+struct MonthPair
 {
-	uint32_t Year;
-	double ValueIN, ValueOUT;
+	int Year, Month;
+
+	MonthPair()
+		:Year(0), Month(0)
+	{}
+	MonthPair(int year, int month)
+	:Year(year), Month(month)
+	{}
+
+	bool operator < (const MonthPair& other) const
+	{
+		if (this->Year < other.Year) return true;
+		if (this->Year == other.Year && this->Month < other.Month) return true;
+		return false;
+	}
 };
 
 class DataManager
@@ -71,7 +84,7 @@ public:
 	void SearchByDate(std::vector<StockChange*>& source, StockChangeType type, const std::string& date);
 
 	//stats
-	std::map<Product*, ProductStats>& GetMonthStats() { return m_MonthStats; }
+	std::map<MonthPair, std::map<Product*, ProductStats>>& GetMonthStats() { return m_MonthStats; }
 	std::map<int, std::map<Product*, ProductStats>>& GetYearStats() { return m_YearStats; }
 	std::map<Product*, ProductStats>& GetCostumStats() { return m_CostumStats; }
 
@@ -88,7 +101,7 @@ private:
 	std::map<Date, StockChange> m_Changes;
 
 	//stats
-	std::map<Product*, ProductStats> m_MonthStats;
+	std::map<MonthPair, std::map<Product*, ProductStats>> m_MonthStats;
 	std::map<int, std::map<Product*, ProductStats>> m_YearStats;
 	std::map<Product*, ProductStats> m_CostumStats;
 };
