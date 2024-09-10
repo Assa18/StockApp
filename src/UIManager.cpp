@@ -153,11 +153,11 @@ void UIManager::Update()
 				m_ProductData.Reset();
 			}
 			ImGui::SameLine();
-			WhatToShow(5, m_TextsProduct, m_ShowTextsProduct);
+			WhatToShow(6, m_TextsProduct, m_ShowTextsProduct);
 			ImGui::SameLine();
 			ShowSearch(m_DataM->GetProductPtrs(), m_SearchStringPr);
 			
-			ShowTable(m_DataM->GetProductPtrs(), 5, m_TextsProduct, m_ShowTextsProduct);
+			ShowTable(m_DataM->GetProductPtrs(), 6, m_TextsProduct, m_ShowTextsProduct);
 
 			ImGui::EndTabItem();
 		}
@@ -414,6 +414,11 @@ void UIManager::AddProductWindow()
 		ImGui::PopStyleColor();
 		ImGui::InputFloat("##5", &m_ProductData.SellPrice, 0.0f, 0.0f, "%.2f");
 
+		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
+		ImGui::Text("Használat:"); ImGui::SameLine();
+		ImGui::PopStyleColor();
+		ImGui::InputText("##6", &m_ProductData.Usage);
+
 		static bool errorEmpty = false;
 		if (ImGui::Button("Ok"))
 		{
@@ -422,7 +427,7 @@ void UIManager::AddProductWindow()
 			{
 				uint32_t id = Product::GetNewID();
 				Product pr(id, m_ProductData.Barcode, m_ProductData.Name, m_ProductData.Count,
-					m_ProductData.BuyPrice, m_ProductData.SellPrice);
+					m_ProductData.BuyPrice, m_ProductData.SellPrice, m_ProductData.Usage);
 				m_DataM->AddProduct(pr);
 				m_DataM->FillProductPtrs(m_OnStock);
 				ImGui::CloseCurrentPopup();
@@ -487,6 +492,11 @@ void UIManager::EditProductWindow()
 		ImGui::PopStyleColor();
 		ImGui::InputFloat("##5", &m_ProductData.SellPrice, 0.0f, 0.0f, "%.2f");
 
+		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
+		ImGui::Text("Használat:"); ImGui::SameLine();
+		ImGui::PopStyleColor();
+		ImGui::InputText("##6", &m_ProductData.Usage);
+
 		static bool errorEmpty = false;
 		if (ImGui::Button("Ok"))
 		{
@@ -496,7 +506,7 @@ void UIManager::EditProductWindow()
 				if (m_DataM->GetProducts().count(m_ProductData.ID) > 0)
 				{
 					m_DataM->GetProducts()[m_ProductData.ID].Set(m_ProductData.Name, m_ProductData.Barcode, m_ProductData.Count,
-						m_ProductData.BuyPrice, m_ProductData.SellPrice);
+						m_ProductData.BuyPrice, m_ProductData.SellPrice, m_ProductData.Usage);
 				}
 
 				m_DataM->FillProductPtrs(m_OnStock);
@@ -1109,6 +1119,12 @@ void UIManager::ShowTable(const std::vector<Product*>& source, int num, const ch
 			{
 				ImGui::TableNextColumn();
 				ImGui::Text("%f", (*it)->GetSellPrice());
+			}
+
+			if (showTexts[5])
+			{
+				ImGui::TableNextColumn();
+				ImGui::Text("%s", (*it)->GetUsage().c_str());
 			}
 
 			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.6313f, 0.8078f, 0.7647f, 1.0f));

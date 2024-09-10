@@ -63,8 +63,8 @@ private:
 	const char* m_TextsAllChange[5] = { u8"Vonalkód", u8"Név", u8"Típus", u8"Darabszám", u8"Dátum"};
 	bool m_ShowTextsAllChange[5] = { true,true,true,true,true };
 
-	const char* m_TextsProduct[5] = { u8"Vonalkód", u8"Név", u8"Darabszám", u8"Vétel ár", u8"Eladási ár" };
-	bool m_ShowTextsProduct[5] = { true,true,true,true,true };
+	const char* m_TextsProduct[6] = { u8"Vonalkód", u8"Név", u8"Darabszám", u8"Vétel ár", u8"Eladási ár", u8"Használat"};
+	bool m_ShowTextsProduct[6] = { true,true,true,true,true,true };
 
 	const char* m_TypeNames[3] = { u8"Minden", u8"Bejövö", u8"Kimenö" };
 

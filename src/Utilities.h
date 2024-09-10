@@ -16,7 +16,7 @@ struct ChangeData
 
 struct ProductData
 {
-	std::string Name, Barcode;
+	std::string Name, Barcode, Usage;
 	float BuyPrice, SellPrice;
 	int Count = 0;
 	uint32_t ID;

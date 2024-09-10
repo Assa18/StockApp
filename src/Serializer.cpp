@@ -19,6 +19,7 @@ void Serializer::SerializeProducts(const DataManager* dM, const char* path)
 		outProducts << '\t' << "Darabszam:\t" << pr.second.GetCount() << '\n';
 		outProducts << '\t' << "Vetel_ar:\t" << pr.second.GetBuyPrice() << '\n';
 		outProducts << '\t' << "Eladasi_ar:\t" << pr.second.GetSellPrice() << '\n';
+		outProducts << '\t' << "Hsznalat:\t" << pr.second.GetUsage() << '\n';
 		outProducts << "}\n";
 	}
 
@@ -94,6 +95,13 @@ void Serializer::DeserializeProducts(DataManager* dM, const char* path)
 		std::getline(ss6, input, '	');
 		std::getline(ss6, input, '	');
 		pr.SetSellPrice(std::stof(input));
+		
+		std::getline(inProducts, line);
+		std::stringstream ss7(line);
+		std::getline(ss7, input, '	');
+		std::getline(ss7, input, '	');
+		std::getline(ss7, input, '	');
+		pr.SetUsage(input);
 
 		//the '}'
 		std::getline(inProducts, line);
