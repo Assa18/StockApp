@@ -32,7 +32,7 @@ void Product::SetID(uint32_t id)
 	m_ID = id;
 }
 
-std::string Product::GetBarcode() const
+std::string& Product::GetBarcode()
 {
 	return m_Barcode;
 }
@@ -42,7 +42,7 @@ void Product::SetBarcode(const std::string& barcode)
 	m_Barcode = barcode;
 }
 
-std::string Product::GetName() const
+std::string& Product::GetName()
 {
 	return m_Name;
 }
@@ -52,7 +52,7 @@ void Product::SetName(const std::string& name)
 	m_Name = name;
 }
 
-int Product::GetCount() const
+int& Product::GetCount()
 {
 	return m_Count;
 }
@@ -62,7 +62,7 @@ void Product::SetCount(int count)
 	m_Count = count;
 }
 
-float Product::GetBuyPrice() const
+float& Product::GetBuyPrice()
 {
 	return m_BuyPrice;
 }
@@ -72,7 +72,7 @@ void Product::SetBuyPrice(float price)
 	m_BuyPrice = price;
 }
 
-float Product::GetSellPrice() const
+float& Product::GetSellPrice()
 {
 	return m_SellPrice;
 }

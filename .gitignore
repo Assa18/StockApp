@@ -1,6 +1,7 @@
 # Directories
 .vs/
 x64/
+Original_Exe/
 
 # Files
 *.user

@@ -163,10 +163,10 @@
     <ClCompile Include="directories\include\ImGui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="directories\include\ImGui\imgui_tables.cpp" />
     <ClCompile Include="directories\include\ImGui\imgui_widgets.cpp" />
-    <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\UIManager.cpp" />
     <ClCompile Include="src\StockChange.cpp" />
+    <ClCompile Include="src\Utilities.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="directories\include\stb_image\stb_image.h" />
@@ -185,6 +185,7 @@
     <ClInclude Include="directories\include\ImGui\imstb_truetype.h" />
     <ClInclude Include="src\UIManager.h" />
     <ClInclude Include="src\StockChange.h" />
+    <ClInclude Include="src\Utilities.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -5,7 +5,7 @@
 
 enum class StockChangeType
 {
-	NONE = 0, IN, OUT
+	ANY = 0, IN, OUT
 };
 
 enum class TimeRanges
@@ -141,7 +141,7 @@ class StockChange
 public:
 	StockChange();
 	StockChange(const StockChange& change);
-	StockChange(Product* pr, const Date& date, int count = 1, StockChangeType type = StockChangeType::NONE);
+	StockChange(Product* pr, const Date& date, int count = 1, StockChangeType type = StockChangeType::ANY);
 	~StockChange();
 
 	Product* GetProduct() const;
@@ -155,6 +155,10 @@ public:
 	void SetCount(int count);
 
 	void Set(Product* prPtr, int count, StockChangeType type);
+	void Set(const StockChange& change);
+	void Reset(StockChangeType type = StockChangeType::ANY);
+
+	friend class UIManager;
 private:
 	Product* m_Product;
 	Date m_Date;

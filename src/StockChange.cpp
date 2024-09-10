@@ -6,7 +6,9 @@
 
 StockChange::StockChange()
 {
-
+	m_Count = 0;
+	m_Type = StockChangeType::ANY;
+	m_Product = nullptr;
 }
 
 StockChange::StockChange(const StockChange& change)
@@ -72,6 +74,22 @@ void StockChange::Set(Product* prPtr, int count, StockChangeType type)
 {
 	m_Product = prPtr;
 	m_Count = count;
+	m_Type = type;
+}
+
+void StockChange::Set(const StockChange& change)
+{
+	m_Product = change.m_Product;
+	m_Type = change.m_Type;
+	m_Date = change.m_Date;
+	m_Count = change.m_Count;
+}
+
+void StockChange::Reset(StockChangeType type)
+{
+	m_Product = nullptr;
+	m_Date = Date::GetCurrrentDate();
+	m_Count = 0;
 	m_Type = type;
 }
 
@@ -165,6 +183,7 @@ int Date::GetDayOfMonth(int month)
 		return 31;
 		break;
 	default:
+		return 30;
 		break;
 	}
 }
