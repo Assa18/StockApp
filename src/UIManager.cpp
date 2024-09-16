@@ -1112,13 +1112,13 @@ void UIManager::ShowTable(const std::vector<Product*>& source, int num, const ch
 			if (showTexts[3])
 			{
 				ImGui::TableNextColumn();
-				ImGui::Text("%f", (*it)->GetBuyPrice());
+				ImGui::Text("%.2f", (*it)->GetBuyPrice());
 			}
 
 			if (showTexts[4])
 			{
 				ImGui::TableNextColumn();
-				ImGui::Text("%f", (*it)->GetSellPrice());
+				ImGui::Text("%.2f", (*it)->GetSellPrice());
 			}
 
 			if (showTexts[5])
