@@ -1,6 +1,7 @@
 #include "DataManager.h"
 
 #include <set>
+#include <algorithm>
 
 DataManager::DataManager()
 {
@@ -190,6 +191,8 @@ void DataManager::FillProductPtrs(bool onStock)
 		if (onStock && (*it).second.GetCount() > 0) m_ProductPtrs.push_back(&(*it).second);
 		else if (!onStock) m_ProductPtrs.push_back(&(*it).second);
 	}
+
+	SortProductsByName();
 }
 
 void DataManager::SearchByName(std::vector<StockChange*>& source, StockChangeType type, const std::string& name)
@@ -338,4 +341,29 @@ bool DataManager::MatchNames(const std::string& str1, const std::string& str2)
 		return true;
 
 	return false;
+}
+
+void DataManager::SortProductsByName()
+{
+	for (int j = 1; j < m_ProductPtrs.size(); j++)
+	{
+		auto tmp = m_ProductPtrs[j];
+		int i = j - 1;
+		while (i >= 0 && Lower(m_ProductPtrs[i]->GetName(), tmp->GetName()))
+		{
+			m_ProductPtrs[i + 1] = m_ProductPtrs[i];
+			i--;
+		}
+		m_ProductPtrs[i + 1] = tmp;
+	}
+}
+
+bool DataManager::Lower(const std::string& name1, const std::string& name2)
+{
+	std::string tmp1 = name1, tmp2 = name2;
+
+	std::transform(tmp1.begin(), tmp1.end(), tmp1.begin(), [](unsigned char c) {return std::tolower(c); });
+	std::transform(tmp2.begin(), tmp2.end(), tmp2.begin(), [](unsigned char c) {return std::tolower(c); });
+
+	return tmp1 > tmp2;
 }

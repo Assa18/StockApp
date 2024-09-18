@@ -48,9 +48,9 @@ App::App()
 	Serializer::DeserializeStockChanges(m_DataManager, "StockChanges.txt");
 
 	m_UIManager = new UIManager;
-	m_UIManager->SetDataManager(m_DataManager);
 	m_UIManager->SetupStyle();
 	Serializer::DeserializeSettings(m_DataManager, m_UIManager, "Settings.txt");
+	m_UIManager->SetDataManager(m_DataManager);
 }
 
 App::~App()

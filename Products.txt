@@ -1,4 +1,4 @@
-Number of products: 6
+Number of products: 7
 {
 	ID:	1
 	Nev:	Ceruzahegy
@@ -6,7 +6,7 @@ Number of products: 6
 	Darabszam:	2
 	Vetel_ar:	45
 	Eladasi_ar:	53
-	Hsznalat:	
+	Hasznalat:	
 }
 {
 	ID:	2
@@ -15,7 +15,7 @@ Number of products: 6
 	Darabszam:	3
 	Vetel_ar:	7
 	Eladasi_ar:	10
-	Hsznalat:	dqwfdfadsf
+	Hasznalat:	dqwfdfadsf
 }
 {
 	ID:	3
@@ -24,7 +24,7 @@ Number of products: 6
 	Darabszam:	1
 	Vetel_ar:	40
 	Eladasi_ar:	50
-	Hsznalat:	
+	Hasznalat:	
 }
 {
 	ID:	4
@@ -33,7 +33,7 @@ Number of products: 6
 	Darabszam:	17
 	Vetel_ar:	3
 	Eladasi_ar:	5.1
-	Hsznalat:	sfsdfsdfs
+	Hasznalat:	sfsdfsdfs
 }
 {
 	ID:	5
@@ -42,7 +42,7 @@ Number of products: 6
 	Darabszam:	0
 	Vetel_ar:	6.3
 	Eladasi_ar:	10.43
-	Hsznalat:	
+	Hasznalat:	
 }
 {
 	ID:	6
@@ -51,5 +51,14 @@ Number of products: 6
 	Darabszam:	4
 	Vetel_ar:	18.4
 	Eladasi_ar:	20.89
-	Hsznalat:	
+	Hasznalat:	
+}
+{
+	ID:	9
+	Nev:	kgghfhg
+	Vonalkod:	
+	Darabszam:	0
+	Vetel_ar:	0
+	Eladasi_ar:	0
+	Hasznalat:	
 }

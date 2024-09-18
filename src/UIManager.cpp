@@ -407,7 +407,7 @@ void UIManager::AddProductWindow()
 		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
 		ImGui::Text("Vétel ár:"); ImGui::SameLine();
 		ImGui::PopStyleColor();
-		ImGui::InputFloat("##4", &m_ProductData.BuyPrice);
+		ImGui::InputFloat("##4", &m_ProductData.BuyPrice, 0.0f, 0.0f, "%.2f");
 
 		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
 		ImGui::Text("Eladási ár:"); ImGui::SameLine();

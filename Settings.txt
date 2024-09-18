@@ -1,2 +1,31 @@
 Betumeret:
 20
+Keszleten:
+1
+Mit mutass termek:
+0
+1
+1
+0
+1
+1
+Mit mutass mozgas:
+0
+1
+1
+1
+Mit mutass osszesmozgas:
+0
+1
+1
+1
+1
+Mit mutass osszegzes:
+0
+1
+1
+1
+1
+1
+1
+1
