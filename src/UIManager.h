@@ -57,26 +57,26 @@ private:
 	float m_FontSize = 20.0f;
 	UIStates m_State = UIStates::NoState;
 
-	const char* m_TextsChange[4] = { u8"Vonalkód", u8"Név", u8"Darabszám", u8"Dátum" };
+	const char* m_TextsChange[4] = { u8"Barcode", u8"Name", u8"Count", u8"Date" };
 	bool m_ShowTextsChange[4] = { true,true,true,true };
 
-	const char* m_TextsAllChange[5] = { u8"Vonalkód", u8"Név", u8"Típus", u8"Darabszám", u8"Dátum"};
+	const char* m_TextsAllChange[5] = { u8"Barcode", u8"Name", u8"Type", u8"Count", u8"Date"};
 	bool m_ShowTextsAllChange[5] = { true,true,true,true,true };
 
-	const char* m_TextsProduct[6] = { u8"Vonalkód", u8"Név", u8"Darabszám", u8"Vétel ár", u8"Eladási ár", u8"Használat"};
+	const char* m_TextsProduct[6] = { u8"Barcode", u8"Name", u8"Count", u8"Buy price", u8"Sell price", u8"Description"};
 	bool m_ShowTextsProduct[6] = { true,true,true,true,true,true };
 
-	const char* m_TypeNames[3] = { u8"Minden", u8"Bejövö", u8"Kimenö" };
+	const char* m_TypeNames[3] = { u8"All", u8"Buy", u8"Sell" };
 
-	const char* m_TimeRangeNames[10] = {u8"Minden", u8"Ma", u8"Tegnap", u8"Ez a hét", u8"Múlt hét", u8"Ez a hónap", 
-		u8"Múlt hónap", u8"Ez az év", u8"Múlt év", u8"Egyéni"};
+	const char* m_TimeRangeNames[10] = {u8"All", u8"Today", u8"Yesterday", u8"This week", u8"Last week", u8"This month", 
+		u8"Last month", u8"This year", u8"Last year", u8"Costum"};
 
-	const char* m_OverallTexts[8] = { u8"Vonalkód", u8"Név", u8"Vétel ár", u8"Bejövö darabszám", u8"Össz vétel ár",
-		u8"Eladási ár", u8"Kimenö darabszám", u8"Össz eladási ár" };
+	const char* m_OverallTexts[8] = { u8"Barcode", u8"Name", u8"Buy price", u8"In Count", u8"Total buyings",
+		u8"Sell price", u8"Out count", u8"Total sellings" };
 	bool m_ShowOverallTexts[8] = { true,true,true,true,true,true,true,true };
 
-	std::string m_MonthNames[12] = { "Január", "Február", "Március", "Április", "Május", "Június", "Július", "Augusztus", "Szeptember",
-	"Október", "November", "December" };
+	std::string m_MonthNames[12] = { "January", "February", "March", "April", "May", "June", "July", "August", "September",
+	"October", "November", "December" };
 
 	std::string m_SearchStringIN;
 	std::string m_SearchStringOUT;

@@ -15,7 +15,7 @@ Number of products: 7
 	Darabszam:	3
 	Vetel_ar:	7
 	Eladasi_ar:	10
-	Hasznalat:	dqwfdfadsf
+	Hasznalat:	
 }
 {
 	ID:	3
@@ -33,7 +33,7 @@ Number of products: 7
 	Darabszam:	17
 	Vetel_ar:	3
 	Eladasi_ar:	5.1
-	Hasznalat:	sfsdfsdfs
+	Hasznalat:	
 }
 {
 	ID:	5
