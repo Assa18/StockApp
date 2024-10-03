@@ -8,7 +8,8 @@ Product::Product()
 	m_SellPrice = 0.0f;
 }
 
-Product::Product(uint32_t id, const std::string& barcode, const std::string& name, int count, float buyPrice, float sellPrice)
+Product::Product(uint32_t id, const std::string& barcode, const std::string& name, int count, float buyPrice, float sellPrice,
+	const std::string& usage)
 {
 	m_ID = id;
 	m_Barcode = barcode;
@@ -16,6 +17,7 @@ Product::Product(uint32_t id, const std::string& barcode, const std::string& nam
 	m_Count = count;
 	m_BuyPrice = buyPrice;
 	m_SellPrice = sellPrice;
+	m_Usage = usage;
 }
 
 Product::~Product()
@@ -40,6 +42,16 @@ std::string& Product::GetBarcode()
 void Product::SetBarcode(const std::string& barcode)
 {
 	m_Barcode = barcode;
+}
+
+std::string& Product::GetUsage()
+{
+	return m_Usage;
+}
+
+void Product::SetUsage(const std::string& usage)
+{
+	m_Usage = usage;
 }
 
 std::string& Product::GetName()
@@ -89,6 +101,7 @@ void Product::Reset()
 	m_Count = 0;
 	m_BuyPrice = 0.0f;
 	m_SellPrice = 0.0f;
+	m_Usage = "";
 }
 
 static uint32_t s_LastID = 0;
@@ -104,11 +117,12 @@ uint32_t Product::GetNewID()
 	return s_LastID;
 }
 
-void Product::Set(const std::string& name, const std::string& barcode, int count, float buyPrice, float sellPrice)
+void Product::Set(const std::string& name, const std::string& barcode, int count, float buyPrice, float sellPrice, const std::string& usage)
 {
 	m_Name = name;
 	m_Barcode = barcode;
 	m_Count = count;
 	m_BuyPrice = buyPrice;
 	m_SellPrice = sellPrice;
+	m_Usage = usage;
 }

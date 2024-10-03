@@ -19,6 +19,7 @@ void Serializer::SerializeProducts(const DataManager* dM, const char* path)
 		outProducts << '\t' << "Darabszam:\t" << pr.second.GetCount() << '\n';
 		outProducts << '\t' << "Vetel_ar:\t" << pr.second.GetBuyPrice() << '\n';
 		outProducts << '\t' << "Eladasi_ar:\t" << pr.second.GetSellPrice() << '\n';
+		outProducts << '\t' << "Hasznalat:\t" << pr.second.GetUsage() << '\n';
 		outProducts << "}\n";
 	}
 
@@ -94,6 +95,13 @@ void Serializer::DeserializeProducts(DataManager* dM, const char* path)
 		std::getline(ss6, input, '	');
 		std::getline(ss6, input, '	');
 		pr.SetSellPrice(std::stof(input));
+		
+		std::getline(inProducts, line);
+		std::stringstream ss7(line);
+		std::getline(ss7, input, '	');
+		std::getline(ss7, input, '	');
+		std::getline(ss7, input, '	');
+		pr.SetUsage(input);
 
 		//the '}'
 		std::getline(inProducts, line);
@@ -189,6 +197,31 @@ void Serializer::SerializeSettings(const DataManager* dM, const UIManager* uM, c
 	std::ofstream outSettings(path);
 
 	outSettings << "Betumeret:\n" << uM->m_FontSize << '\n';
+	outSettings << "Keszleten:\n" << uM->m_OnStock << '\n';
+
+	outSettings << "Mit mutass termek:\n";
+	for (int i = 0; i < 6; i++)
+	{
+		outSettings << uM->m_ShowTextsProduct[i] << '\n';
+	}
+
+	outSettings << "Mit mutass mozgas:\n";
+	for (int i = 0; i < 4; i++)
+	{
+		outSettings << uM->m_ShowTextsChange[i] << '\n';
+	}
+
+	outSettings << "Mit mutass osszesmozgas:\n";
+	for (int i = 0; i < 5; i++)
+	{
+		outSettings << uM->m_ShowTextsAllChange[i] << '\n';
+	}
+
+	outSettings << "Mit mutass osszegzes:\n";
+	for (int i = 0; i < 8; i++)
+	{
+		outSettings << uM->m_ShowOverallTexts[i] << '\n';
+	}
 
 	outSettings.close();
 }
@@ -208,5 +241,39 @@ void Serializer::DeserializeSettings(DataManager* dM, UIManager* uM, const char*
 	std::getline(inSettings, line);
 	float fontSize = std::stof(line);
 	uM->m_FontSize = fontSize;
+
+	std::getline(inSettings, line);
+	std::getline(inSettings, line);
+	bool onStock = std::stoi(line);
+	uM->m_OnStock = onStock;
+
+	std::getline(inSettings, line);
+	for (int i = 0; i < 6; i++)
+	{
+		std::getline(inSettings, line);
+		uM->m_ShowTextsProduct[i] = std::stoi(line);
+	}
+
+	std::getline(inSettings, line);
+	for (int i = 0; i < 4; i++)
+	{
+		std::getline(inSettings, line);
+		uM->m_ShowTextsChange[i] = std::stoi(line);
+	}
+
+	std::getline(inSettings, line);
+	for (int i = 0; i < 5; i++)
+	{
+		std::getline(inSettings, line);
+		uM->m_ShowTextsAllChange[i] = std::stoi(line);
+	}
+
+	std::getline(inSettings, line);
+	for (int i = 0; i < 8; i++)
+	{
+		std::getline(inSettings, line);
+		uM->m_ShowOverallTexts[i] = std::stoi(line);
+	}
+
 	inSettings.close();
 }

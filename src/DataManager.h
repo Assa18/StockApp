@@ -89,6 +89,8 @@ public:
 
 	void CalculateStats();
 	void CalculateStats(const Date& startDate, const Date& endDate);
+
+	void SortProductsByName();
 private:
 	std::vector<StockChange*> m_ChangesIN;
 	std::vector<StockChange*> m_ChangesOUT;
@@ -103,4 +105,6 @@ private:
 	std::map<MonthPair, std::map<Product*, ProductStats>> m_MonthStats;
 	std::map<int, std::map<Product*, ProductStats>> m_YearStats;
 	std::map<Product*, ProductStats> m_CostumStats;
+
+	bool Lower(const std::string& name1, const std::string& name2);
 };

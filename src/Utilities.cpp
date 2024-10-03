@@ -24,6 +24,7 @@ void ProductData::Set(Product* product)
 	ID = product->GetID();
 	Name = product->GetName();
 	Barcode = product->GetBarcode();
+	Usage = product->GetUsage();
 	BuyPrice = product->GetBuyPrice();
 	SellPrice = product->GetSellPrice();
 	Count = product->GetCount();
@@ -34,6 +35,7 @@ void ProductData::Reset()
 	ID = 0;
 	Name.clear();
 	Barcode.clear();
+	Usage.clear();
 	BuyPrice = 0.0f;
 	SellPrice = 0.0f;
 	Count = 0;
